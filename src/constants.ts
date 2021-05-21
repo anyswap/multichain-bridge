@@ -25,6 +25,16 @@ export enum ChainId {
   FTMMAIN = 250,
 }
 
+export enum Status {
+  Success = 'Success',
+  Pending = 'Pending',
+  Error = 'Error',
+  Failure = 'Failure',
+  Confirming = 'Confirming',
+  Minting = 'Minting',
+  Timeout = 'Timeout',
+}
+
 export const networks = {
   [ChainId.MAINNET]: 'https://ethmainnet.anyswap.exchange',
   [ChainId.RINKEBY]: 'https://rinkeby.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0',
