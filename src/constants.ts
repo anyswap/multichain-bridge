@@ -34,7 +34,7 @@ export enum Status {
   Minting = 'Minting',
   Timeout = 'Timeout',
 }
-
+console.log(Status)
 export const networks = {
   [ChainId.MAINNET]: 'https://ethmainnet.anyswap.exchange',
   [ChainId.RINKEBY]: 'https://rinkeby.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0',

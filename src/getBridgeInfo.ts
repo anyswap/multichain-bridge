@@ -1,6 +1,6 @@
 // import bridgeList from './data/bridgeList.json'
 
-import {toChainUrl, dislineUrl, chainToChainUrl} from './constants'
+import {toChainUrl, dislineUrl, chainToChainUrl, Status} from './constants'
 import {
   getUrlData,
   getLocalData,
@@ -24,7 +24,7 @@ export function DislineBridgeInfo (chainId:any) {
       resolve(lObj)
     } else {
       getUrlData({url: dislineUrl + '/' + chainId}).then((res:any) => {
-        if (res && res.msg && res.msg === 'Error') {
+        if (res && res.msg && res.msg === Status.Error) {
           resolve('')
         } else {
           const data:any = {}
@@ -54,7 +54,7 @@ export function CurrentBridgeInfo (chainId:any) {
       resolve(lObj)
     } else {
       getUrlData({url: toChainUrl + '/' + chainId}).then((res:any) => {
-        if (res && res.msg && res.msg === 'Error') {
+        if (res && res.msg && res.msg === Status.Error) {
           resolve('')
         } else {
           const data:any = {}
@@ -92,7 +92,7 @@ export function ChainToChain ({
         destChainID
       }}).then((res:any) => {
         // console.log(res)
-        if (res && res.msg && res.msg === 'Error') {
+        if (res && res.msg && res.msg === Status.Error) {
           resolve('')
         } else {
           const data:any = {}
