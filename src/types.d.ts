@@ -4,5 +4,7 @@ declare module '*.json' {
 }
 
 declare interface Window {
-  ethereum: any
+  ethereum: any,
+  tronWeb: any
 }
+

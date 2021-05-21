@@ -1,7 +1,11 @@
 import {
   timeout,
-  LOCAL_DATA_LABEL
+  LOCAL_DATA_LABEL,
+  ChainId,
+  specSymbol
 } from '../constants'
+import {isSpecAddress, isTRXAddress} from '../SpecialCoin'
+import {web3Fn} from '../Wallet'
 
 export function thousandBit (num:any, dec:any = 8) {
   if (!Number(num)) return '0.00'
@@ -134,5 +138,22 @@ export function setLocalData (account:string, chainId:any, token:string, data:an
       }
     }
     lsDB.setItem(LOCAL_DATA_LABEL + token, JSON.stringify(lObj))
+  }
+}
+
+export function formatSymbol (symbol?:string) {
+  if (!symbol) return ''
+  symbol = symbol.replace('any', '')
+  symbol = symbol.indexOf('a') === 0 ? symbol.substr(1) : symbol
+  return symbol.toUpperCase()
+}
+
+export function isAddress(address: string, chainId?: ChainId | undefined) {
+  if (chainId && specSymbol.includes(ChainId[chainId])) {
+    return isSpecAddress(address, ChainId[chainId])
+  } else if (chainId && ChainId[chainId] === ChainId.TRX) {
+    return isTRXAddress(address)
+  } else {
+    return web3Fn.utils.isAddress(address)
   }
 }

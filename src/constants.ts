@@ -13,16 +13,26 @@ export const timeout = 1000 * 60 * 10
 
 export const LOCAL_DATA_LABEL = 'ANYSWAP-BRIDGE-SDK-V1-'
 
+export const specSymbol = ['BTC', 'LTC', 'BLOCK']
+
 export enum ChainId {
   MAINNET = 1,
-  RINKEBY = 4,
-  HTTEST = 256,
-  HTMAIN = 128,
   BNBMAIN = 56,
-  BNBTEST = 97,
-  MATICMAIN = 137,
+  OKTMAIN = 66,
   XDAIMAIN = 100,
+  HTMAIN = 128,
+  MATICMAIN = 137,
   FTMMAIN = 250,
+  FSNMAIN = 32659,
+  AVAXMAIN = 43114,
+  BTC = 'BTC',
+  LTC = 'LTC',
+  BLOCK = 'BLOCK',
+  TRX = 'TRX',
+  RINKEBY = 4,
+  BNBTEST = 97,
+  HTTEST = 256,
+  FSNTEST = 46688,
 }
 
 export enum Status {
@@ -34,15 +44,23 @@ export enum Status {
   Minting = 'Minting',
   Timeout = 'Timeout',
 }
-console.log(Status)
+
 export const networks = {
   [ChainId.MAINNET]: 'https://ethmainnet.anyswap.exchange',
-  [ChainId.RINKEBY]: 'https://rinkeby.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0',
-  [ChainId.HTTEST]: 'https://http-testnet.hecochain.com',
-  [ChainId.HTMAIN]: 'https://http-mainnet.hecochain.com',
   [ChainId.BNBMAIN]: 'https://bsc-dataseed1.ninicoin.io/',
-  [ChainId.BNBTEST]: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-  [ChainId.MATICMAIN]: 'https://rpc-mainnet.maticvigil.com',
+  [ChainId.OKTMAIN]: 'https://exchainrpc.okex.org',
   [ChainId.XDAIMAIN]: 'https://rpc.xdaichain.com',
-  [ChainId.FTMMAIN]: 'https://rpcapi.fantom.network'
+  [ChainId.HTMAIN]: 'https://http-mainnet.hecochain.com',
+  [ChainId.MATICMAIN]: 'https://rpc-mainnet.maticvigil.com',
+  [ChainId.FTMMAIN]: 'https://rpcapi.fantom.network',
+  [ChainId.FSNMAIN]: 'https://mainnet.anyswap.exchange',
+  [ChainId.AVAXMAIN]: 'https://api.avax.network/ext/bc/C/rpc',
+  [ChainId.BTC]: '',
+  [ChainId.LTC]: '',
+  [ChainId.BLOCK]: '',
+  [ChainId.TRX]: '',
+  [ChainId.RINKEBY]: 'https://rinkeby.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0',
+  [ChainId.BNBTEST]: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+  [ChainId.HTTEST]: 'https://http-testnet.hecochain.com',
+  [ChainId.FSNTEST]: 'https://testnet.fsn.dev/api',
 }

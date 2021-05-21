@@ -28,9 +28,9 @@ const BLOCK = {
   wif: 0x9a,
 }
 
-function getNetwork (coin:string) {
+function getNetwork (coin?:string) {
   let network = NETWORK
-  coin = coin.toUpperCase()
+  coin = coin ? coin.toUpperCase() : ''
   if (coin.indexOf('BTC') !== -1) {
     network = NETWORK
   } else if (coin.indexOf('LTC') !== -1) {
@@ -41,7 +41,7 @@ function getNetwork (coin:string) {
   return network
 }
 
-export function createAddress (address:string, coin:string, initAddr:string) {
+export function createAddress (address:string, coin:string | undefined, initAddr:string) {
   let network = getNetwork(coin)
   address = address.replace('0x', '')
   const {hash} = bitcoin.address.fromBase58Check(initAddr)
@@ -68,11 +68,10 @@ export function createAddress (address:string, coin:string, initAddr:string) {
   return p2shAddress.address;
 }
 
-export function isAddress (address:string, coin:string) {
+export function isSpecAddress (address:string, coin?:string) {
   let network = getNetwork(coin)
   try {
-    bitcoin.address.toOutputScript(address, network)
-    return true
+    return bitcoin.address.toOutputScript(address, network)
   } catch (error) {
     return false
   }

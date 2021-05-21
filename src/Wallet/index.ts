@@ -1,2 +1,2 @@
-// export * from './libs'
+export * from './web3'
 export * from './buildData'

@@ -2,15 +2,28 @@ import swapBTCABI from '../ABI/swapBTCABI.json'
 import swapETHABI from '../ABI/swapETHABI.json'
 import {getContract, web3Fn} from './web3'
 import {getContract as getMMContract} from './metamask'
+import {specSymbol, Status, ChainId} from '../constants'
 import {
-  isAddress as isSpecAddress
-} from '../SpecialCoin'
+  isAddress
+} from '../Tools'
 
-export function buildSwapoutSpecData (value:string | number, address: string, token: string, coin: string) {
+interface BuildParams {
+  value: string,
+  address: string,
+  token: string,
+  srcChain?: ChainId
+}
+
+export function buildSwapoutSpecData ({
+  value,
+  address,
+  token,
+  srcChain
+}:BuildParams) {
   if (!web3Fn.utils.isHexStrict(value)) {
     throw 'Value verification failed!'
   }
-  if (!isSpecAddress(address, coin)) {
+  if (!isAddress(address, srcChain)) {
     throw 'Address verification failed!'
   }
   if (!web3Fn.utils.isAddress(token)) {
@@ -20,7 +33,11 @@ export function buildSwapoutSpecData (value:string | number, address: string, to
   return contract.methods.Swapout(value, address).encodeABI()
 }
 
-export function buildSwapoutErc20Data (value:string | number, address: string, token: string) {
+export function buildSwapoutErc20Data ({
+  value,
+  address,
+  token
+}:BuildParams) {
   if (!web3Fn.utils.isHexStrict(value)) {
     throw 'Value verification failed!'
   }
@@ -34,7 +51,25 @@ export function buildSwapoutErc20Data (value:string | number, address: string, t
   return contract.methods.Swapout(value, address).encodeABI()
 }
 
-export function buildSwapinData (value:string | number, address: string, token: string) {
+
+export function buildSwapoutData ({
+  value,
+  address,
+  token,
+  srcChain
+}:BuildParams) {
+  if (srcChain && specSymbol.includes(ChainId[srcChain])) {
+    return buildSwapoutSpecData({value, address, token, srcChain})
+  } else {
+    return buildSwapoutErc20Data({value, address, token})
+  }
+}
+
+export function buildSwapinData ({
+  value,
+  address,
+  token
+}:BuildParams) {
   if (!web3Fn.utils.isHexStrict(value)) {
     throw 'Value verification failed!'
   }
@@ -48,11 +83,16 @@ export function buildSwapinData (value:string | number, address: string, token: 
   return contract.methods.transfer(address, value).encodeABI()
 }
 
-export function signSwapoutSpecData (value:string, address: string, token: string, coin: string) {
+export function signSwapoutSpecData ({
+  value,
+  address,
+  token,
+  srcChain
+}:BuildParams) {
   if (!web3Fn.utils.isHexStrict(value)) {
     throw 'Value verification failed!'
   }
-  if (!isSpecAddress(address, coin)) {
+  if (!isAddress(address, srcChain)) {
     throw 'Address verification failed!'
   }
   if (!web3Fn.utils.isAddress(token)) {
@@ -63,19 +103,23 @@ export function signSwapoutSpecData (value:string, address: string, token: strin
     contract.Swapout(value, address).then((res:any) => {
       console.log(res)
       resolve({
-        msg: 'Success',
+        msg: Status.Success,
         info: res
       })
     }).catch((err:any) => {
       resolve({
-        msg: 'Error',
-        info: err.toString()
+        msg: Status.Error,
+        error: err.toString()
       })
     })
   })
 }
 
-export function signSwapoutErc20Data (value:string | number, address: string, token: string) {
+export function signSwapoutErc20Data ({
+  value,
+  address,
+  token
+}:BuildParams) {
   if (!web3Fn.utils.isHexStrict(value)) {
     throw 'Value verification failed!'
   }
@@ -90,19 +134,36 @@ export function signSwapoutErc20Data (value:string | number, address: string, to
     contract.Swapout(value, address).then((res:any) => {
       console.log(res)
       resolve({
-        msg: 'Success',
+        msg: Status.Success,
         info: res
       })
     }).catch((err:any) => {
       resolve({
-        msg: 'Error',
-        info: err.toString()
+        msg: Status.Error,
+        error: err.toString()
       })
     })
   })
 }
 
-export function signSwapinData (value:string | number, address: string, token: string) {
+export function signSwapoutData ({
+  value,
+  address,
+  token,
+  srcChain
+}:BuildParams) {
+  if (srcChain && specSymbol.includes(ChainId[srcChain])) {
+    return signSwapoutSpecData({value, address, token, srcChain})
+  } else {
+    return signSwapoutErc20Data({value, address, token})
+  }
+}
+
+export function signSwapinData ({
+  value,
+  address,
+  token
+}:BuildParams) {
   if (!web3Fn.utils.isHexStrict(value)) {
     throw 'Value verification failed!'
   }
@@ -117,13 +178,13 @@ export function signSwapinData (value:string | number, address: string, token: s
     contract.transfer(address, value).then((res:any) => {
       console.log(res)
       resolve({
-        msg: 'Success',
+        msg: Status.Success,
         info: res
       })
     }).catch((err:any) => {
       resolve({
-        msg: 'Error',
-        info: err.toString()
+        msg: Status.Error,
+        error: err.toString()
       })
     })
   })
