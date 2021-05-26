@@ -46,24 +46,75 @@ export function DislineBridgeInfo (chainId:any) {
 /**
  * 获取当前链的币种信息，支持跨链和提现（swapin/swapout）
  */
+function formatBridgeInfo (obj:any, chainId:any) {
+  const SrcToken = obj.DestToken
+  const DestToken = obj.SrcToken
+  const srcChainID = obj.destChainID
+  const destChainID = obj.srcChainID
+  if (srcChainID.toString() === chainId.toString()) {
+    return {
+      ...obj,
+      SrcToken: SrcToken,
+      DestToken: DestToken,
+      destChainID: destChainID,
+      srcChainID: srcChainID,
+    }
+  } else if (destChainID.toString() === chainId.toString()) {
+    return {
+      ...obj,
+      SrcToken: DestToken,
+      DestToken: SrcToken,
+      destChainID: srcChainID,
+      srcChainID: destChainID,
+    }
+  }
+}
 const CURRENTCHAIN = 'CURRENTCHAIN'
 export function CurrentBridgeInfo (chainId:any) {
   return new Promise(resolve => {
     const lObj = getLocalData(CURRENTCHAIN, chainId, CURRENTCHAIN)
-    if (lObj) {
+    if (lObj && !(Object.getOwnPropertyNames(lObj.swapin).length === 0 && Object.getOwnPropertyNames(lObj.swapout).length === 0)) {
+      // console.log('swapin', Object.getOwnPropertyNames(lObj.swapin).length)
+      // console.log('swapout', Object.getOwnPropertyNames(lObj.swapout).length)
       resolve(lObj)
     } else {
       getUrlData({url: toChainUrl + '/' + chainId}).then((res:any) => {
         if (res && res.msg && res.msg === Status.Error) {
           resolve('')
         } else {
-          const data:any = {}
-          for (const key in res) {
-            data[key] = {}
-            for (const obj of res[key]) {
+          const data:any = {
+            swapin: {},
+            swapout: {},
+          }
+          if (res.swapout && res.swapout.length > 0) {
+            for (const obj of res.swapout) {
               const isProxy = obj.DestToken.DelegateToken ? 1 : 0
               const token = isProxy ? obj.DestToken.DelegateToken.toLowerCase() : (obj.DestToken.ContractAddress ? obj.DestToken.ContractAddress.toLowerCase() : '')
-              data[key][token] = obj
+              if (!data.swapout[token]) {
+                data.swapout[token] = {
+                  name: obj.name,
+                  symbol: obj.symbol,
+                  logoUrl: obj.logoUrl,
+                  list: [formatBridgeInfo(obj, chainId)]
+                }
+              } else {
+                data.swapout[token].list.push(formatBridgeInfo(obj, chainId))
+              }
+            }
+          }
+          if (res.swapin && res.swapin.length > 0) {
+            for (const obj of res.swapin) {
+              const token = obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol
+              if (!data.swapin[token]) {
+                data.swapin[token] = {
+                  name: obj.name,
+                  symbol: obj.symbol,
+                  logoUrl: obj.logoUrl,
+                  list: [formatBridgeInfo(obj, chainId)]
+                }
+              } else {
+                data.swapin[token].list.push(formatBridgeInfo(obj, chainId))
+              }
             }
           }
           setLocalData(CURRENTCHAIN, chainId, CURRENTCHAIN, data)
