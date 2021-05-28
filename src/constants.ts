@@ -1,7 +1,7 @@
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-// export const baseURL = 'https://bridgeapi.anyswap.exchange'
-export const baseURL = 'http://localhost:8107'
+export const baseURL = 'https://bridgeapi.anyswap.exchange'
+// export const baseURL = 'http://localhost:8107'
 
 export const chainToChainUrl = baseURL + '/v2/allserverinfo'
 export const toChainUrl = baseURL + '/v2/bridgeChain'

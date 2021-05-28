@@ -8,22 +8,22 @@ import {
 } from '../Tools'
 
 interface BuildParams {
-  value: string,
+  value: string | number,
   address: string,
   token: string,
-  srcChain?: ChainId
+  destChain?: ChainId
 }
 
 export function buildSwapoutSpecData ({
   value,
   address,
   token,
-  srcChain
+  destChain
 }:BuildParams) {
-  if (!web3Fn.utils.isHexStrict(value)) {
+  if (!value || value.toString().indexOf('.') !== -1 || isNaN(Number(value))) {
     throw 'Value verification failed!'
   }
-  if (!isAddress(address, srcChain)) {
+  if (!isAddress(address, destChain)) {
     throw 'Address verification failed!'
   }
   if (!web3Fn.utils.isAddress(token)) {
@@ -38,7 +38,7 @@ export function buildSwapoutErc20Data ({
   address,
   token
 }:BuildParams) {
-  if (!web3Fn.utils.isHexStrict(value)) {
+  if (!value || value.toString().indexOf('.') !== -1 || isNaN(Number(value))) {
     throw 'Value verification failed!'
   }
   if (!web3Fn.utils.isAddress(address)) {
@@ -56,10 +56,10 @@ export function buildSwapoutData ({
   value,
   address,
   token,
-  srcChain
+  destChain
 }:BuildParams) {
-  if (srcChain && specSymbol.includes(ChainId[srcChain])) {
-    return buildSwapoutSpecData({value, address, token, srcChain})
+  if (destChain && specSymbol.includes(ChainId[destChain])) {
+    return buildSwapoutSpecData({value, address, token, destChain})
   } else {
     return buildSwapoutErc20Data({value, address, token})
   }
@@ -70,7 +70,7 @@ export function buildSwapinData ({
   address,
   token
 }:BuildParams) {
-  if (!web3Fn.utils.isHexStrict(value)) {
+  if (!value || value.toString().indexOf('.') !== -1 || isNaN(Number(value))) {
     throw 'Value verification failed!'
   }
   if (!web3Fn.utils.isAddress(address)) {
@@ -87,18 +87,30 @@ export function signSwapoutSpecData ({
   value,
   address,
   token,
-  srcChain
+  destChain
 }:BuildParams) {
-  if (!web3Fn.utils.isHexStrict(value)) {
-    throw 'Value verification failed!'
-  }
-  if (!isAddress(address, srcChain)) {
-    throw 'Address verification failed!'
-  }
-  if (!web3Fn.utils.isAddress(token)) {
-    throw 'Token verification failed!'
-  }
   return new Promise(resolve => {
+    if (!value || value.toString().indexOf('.') !== -1 || isNaN(Number(value))) {
+      resolve({
+        msg: Status.Error,
+        error: 'Value verification failed!'
+      })
+      return
+    }
+    if (!isAddress(address, destChain)) {
+      resolve({
+        msg: Status.Error,
+        error: 'Address verification failed!'
+      })
+      return
+    }
+    if (!web3Fn.utils.isAddress(token)) {
+      resolve({
+        msg: Status.Error,
+        error: 'Token verification failed!'
+      })
+      return
+    }
     const contract = getMMContract(swapBTCABI, token)
     contract.Swapout(value, address).then((res:any) => {
       console.log(res)
@@ -109,7 +121,7 @@ export function signSwapoutSpecData ({
     }).catch((err:any) => {
       resolve({
         msg: Status.Error,
-        error: err.toString()
+        error: err?.data?.message ? err?.data?.message : err.toString()
       })
     })
   })
@@ -120,16 +132,28 @@ export function signSwapoutErc20Data ({
   address,
   token
 }:BuildParams) {
-  if (!web3Fn.utils.isHexStrict(value)) {
-    throw 'Value verification failed!'
-  }
-  if (!web3Fn.utils.isAddress(address)) {
-    throw 'Address verification failed!'
-  }
-  if (!web3Fn.utils.isAddress(token)) {
-    throw 'Token verification failed!'
-  }
   return new Promise(resolve => {
+    if (!value || value.toString().indexOf('.') !== -1 || isNaN(Number(value))) {
+      resolve({
+        msg: Status.Error,
+        error: 'Value verification failed!'
+      })
+      return
+    }
+    if (!web3Fn.utils.isAddress(address)) {
+      resolve({
+        msg: Status.Error,
+        error: 'Address verification failed!'
+      })
+      return
+    }
+    if (!web3Fn.utils.isAddress(token)) {
+      resolve({
+        msg: Status.Error,
+        error: 'Token verification failed!'
+      })
+      return
+    }
     const contract = getMMContract(swapETHABI, token)
     contract.Swapout(value, address).then((res:any) => {
       console.log(res)
@@ -140,7 +164,7 @@ export function signSwapoutErc20Data ({
     }).catch((err:any) => {
       resolve({
         msg: Status.Error,
-        error: err.toString()
+        error: err?.data?.message ? err?.data?.message : err.toString()
       })
     })
   })
@@ -150,10 +174,10 @@ export function signSwapoutData ({
   value,
   address,
   token,
-  srcChain
+  destChain
 }:BuildParams) {
-  if (srcChain && specSymbol.includes(ChainId[srcChain])) {
-    return signSwapoutSpecData({value, address, token, srcChain})
+  if (destChain && specSymbol.includes(ChainId[destChain])) {
+    return signSwapoutSpecData({value, address, token, destChain})
   } else {
     return signSwapoutErc20Data({value, address, token})
   }
@@ -164,16 +188,29 @@ export function signSwapinData ({
   address,
   token
 }:BuildParams) {
-  if (!web3Fn.utils.isHexStrict(value)) {
-    throw 'Value verification failed!'
-  }
-  if (!web3Fn.utils.isAddress(address)) {
-    throw 'Address verification failed!'
-  }
-  if (!web3Fn.utils.isAddress(token)) {
-    throw 'Token verification failed!'
-  }
   return new Promise(resolve => {
+    console.log(value.toString().indexOf('.') === -1)
+    if (!value || value.toString().indexOf('.') !== -1 || isNaN(Number(value))) {
+      resolve({
+        msg: Status.Error,
+        error: 'Value verification failed!'
+      })
+      return
+    }
+    if (!web3Fn.utils.isAddress(address)) {
+      resolve({
+        msg: Status.Error,
+        error: 'Address verification failed!'
+      })
+      return
+    }
+    if (!web3Fn.utils.isAddress(token)) {
+      resolve({
+        msg: Status.Error,
+        error: 'Token verification failed!'
+      })
+      return
+    }
     const contract = getMMContract(swapBTCABI, token)
     contract.transfer(address, value).then((res:any) => {
       console.log(res)
@@ -184,7 +221,7 @@ export function signSwapinData ({
     }).catch((err:any) => {
       resolve({
         msg: Status.Error,
-        error: err.toString()
+        error: err?.data?.message ? err?.data?.message : err.toString()
       })
     })
   })
