@@ -94,7 +94,9 @@ export function CurrentBridgeInfo (chainId:any) {
                 data.swapout[token] = {
                   name: obj.name,
                   symbol: obj.symbol,
+                  decimals: obj.DestToken.Decimals,
                   logoUrl: obj.logoUrl,
+                  isProxy: isProxy,
                   list: [formatBridgeInfo(obj, chainId)]
                 }
               } else {
@@ -109,6 +111,7 @@ export function CurrentBridgeInfo (chainId:any) {
                 data.swapin[token] = {
                   name: obj.name,
                   symbol: obj.symbol,
+                  decimals: obj.SrcToken.Decimals,
                   logoUrl: obj.logoUrl,
                   list: [formatBridgeInfo(obj, chainId)]
                 }
