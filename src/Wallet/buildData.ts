@@ -121,7 +121,7 @@ export function signSwapoutSpecData ({
     }).catch((err:any) => {
       resolve({
         msg: Status.Error,
-        error: err?.data?.message ? err?.data?.message : err.toString()
+        error: err?.data?.message ? err?.data?.message : (err?.message ? err?.message : err.toString())
       })
     })
   })
@@ -164,7 +164,7 @@ export function signSwapoutErc20Data ({
     }).catch((err:any) => {
       resolve({
         msg: Status.Error,
-        error: err?.data?.message ? err?.data?.message : err.toString()
+        error: err?.data?.message ? err?.data?.message : (err?.message ? err?.message : err.toString())
       })
     })
   })
@@ -213,15 +213,16 @@ export function signSwapinData ({
     }
     const contract = getMMContract(swapBTCABI, token)
     contract.transfer(address, value).then((res:any) => {
-      console.log(res)
+      // console.log(res)
       resolve({
         msg: Status.Success,
         info: res
       })
     }).catch((err:any) => {
+      console.log(err)
       resolve({
         msg: Status.Error,
-        error: err?.data?.message ? err?.data?.message : err.toString()
+        error: err?.data?.message ? err?.data?.message : (err?.message ? err?.message : err.toString())
       })
     })
   })
