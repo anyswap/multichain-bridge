@@ -46,29 +46,31 @@ export function DislineBridgeInfo (chainId:any) {
 /**
  * 获取当前链的币种信息，支持跨链和提现（swapin/swapout）
  */
-function formatBridgeInfo (obj:any, chainId:any) {
-  const SrcToken = obj.DestToken
-  const DestToken = obj.SrcToken
-  const srcChainID = obj.destChainID
-  const destChainID = obj.srcChainID
-  if (srcChainID.toString() === chainId.toString()) {
-    return {
-      ...obj,
-      SrcToken: SrcToken,
-      DestToken: DestToken,
-      destChainID: destChainID,
-      srcChainID: srcChainID,
-    }
-  } else if (destChainID.toString() === chainId.toString()) {
-    return {
-      ...obj,
-      SrcToken: DestToken,
-      DestToken: SrcToken,
-      destChainID: srcChainID,
-      srcChainID: destChainID,
-    }
-  }
-}
+// function formatBridgeInfo (obj:any, chainId:any) {
+//   const SrcToken = obj.DestToken
+//   const DestToken = obj.SrcToken
+//   const srcChainID = obj.destChainID
+//   const destChainID = obj.srcChainID
+//   if (srcChainID.toString() === chainId.toString()) {
+//     return {
+//       ...obj,
+//       SrcToken: SrcToken,
+//       DestToken: DestToken,
+//       destChainID: destChainID,
+//       srcChainID: srcChainID,
+//       decimals: obj.SrcToken.Decimals
+//     }
+//   } else if (destChainID.toString() === chainId.toString()) {
+//     return {
+//       ...obj,
+//       SrcToken: DestToken,
+//       DestToken: SrcToken,
+//       destChainID: srcChainID,
+//       srcChainID: destChainID,
+//       decimals: obj.DestToken.Decimals
+//     }
+//   }
+// }
 const CURRENTCHAIN = 'CURRENTCHAIN'
 export function CurrentBridgeInfo (chainId:any) {
   return new Promise(resolve => {
@@ -96,11 +98,39 @@ export function CurrentBridgeInfo (chainId:any) {
                   symbol: obj.symbol,
                   decimals: obj.DestToken.Decimals,
                   logoUrl: obj.logoUrl,
-                  isProxy: isProxy,
-                  list: [formatBridgeInfo(obj, chainId)]
+                  chainId: chainId,
+                  address: token,
+                  underlying: isProxy ? {
+                    address: obj.DestToken.DelegateToken.toLowerCase(),
+                    name: obj.name,
+                    symbol: obj.symbol,
+                    decimals: obj.DestToken.Decimals
+                  } : false,
+                  destChains: {
+                    [obj.srcChainID]: {
+                      address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
+                      name: obj.name,
+                      symbol: obj.symbol,
+                      decimals: obj.SrcToken.Decimals
+                    }
+                  },
+                  BigValueThreshold: obj.DestToken.BigValueThreshold,
+                  ContractVersion: obj.DestToken.ContractVersion,
+                  MaximumSwap: obj.DestToken.MaximumSwap,
+                  MaximumSwapFee: obj.DestToken.MaximumSwapFee,
+                  MinimumSwap: obj.DestToken.MinimumSwap,
+                  MinimumSwapFee: obj.DestToken.MinimumSwapFee,
+                  SwapFeeRatePerMillion: obj.DestToken.SwapFeeRate,
                 }
               } else {
-                data.swapout[token].list.push(formatBridgeInfo(obj, chainId))
+                if (obj.destChainID.toString() === chainId.toString()) {
+                  data.swapout[token].destChains[obj.srcChainID] = {
+                    address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
+                    name: obj.name,
+                    symbol: obj.symbol,
+                    decimals: obj.SrcToken.Decimals
+                  }
+                }
               }
             }
           }
@@ -108,15 +138,47 @@ export function CurrentBridgeInfo (chainId:any) {
             for (const obj of res.swapin) {
               const token = obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol
               if (!data.swapin[token]) {
+                // data.swapin[token] = {
+                //   name: obj.name,
+                //   symbol: obj.symbol,
+                //   decimals: obj.SrcToken.Decimals,
+                //   logoUrl: obj.logoUrl,
+                //   list: [formatBridgeInfo(obj, chainId)]
+                // }
                 data.swapin[token] = {
                   name: obj.name,
                   symbol: obj.symbol,
                   decimals: obj.SrcToken.Decimals,
                   logoUrl: obj.logoUrl,
-                  list: [formatBridgeInfo(obj, chainId)]
+                  chainId: chainId,
+                  address: token,
+                  underlying: false,
+                  destChains: {
+                    [obj.destChainID]: {
+                      address: obj.DestToken.ContractAddress.toLowerCase(),
+                      name: obj.name,
+                      symbol: obj.symbol,
+                      decimals: obj.DestToken.Decimals
+                    }
+                  },
+                  BigValueThreshold: obj.SrcToken.BigValueThreshold,
+                  ContractVersion: obj.SrcToken.ContractVersion,
+                  MaximumSwap: obj.SrcToken.MaximumSwap,
+                  MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
+                  MinimumSwap: obj.SrcToken.MinimumSwap,
+                  MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
+                  SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
                 }
               } else {
-                data.swapin[token].list.push(formatBridgeInfo(obj, chainId))
+                if (obj.srcChainID.toString() === chainId.toString()) {
+                  data.swapin[token].destChains[obj.destChainID] = {
+                    address: obj.DestToken.ContractAddress.toLowerCase(),
+                    name: obj.name,
+                    symbol: obj.symbol,
+                    decimals: obj.DestToken.Decimals
+                  }
+                }
+                // data.swapin[token].destChains.push(formatBridgeInfo(obj, chainId))
               }
             }
           }
