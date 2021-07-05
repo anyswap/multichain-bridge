@@ -10,7 +10,7 @@ import {
 interface BuildParams {
   value: string | number,
   address: string,
-  token: string,
+  token: string | undefined,
   destChain?: ChainId
 }
 

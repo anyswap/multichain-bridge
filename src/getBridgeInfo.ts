@@ -104,7 +104,8 @@ export function CurrentBridgeInfo (chainId:any) {
                     address: obj.DestToken.DelegateToken.toLowerCase(),
                     name: obj.name,
                     symbol: obj.symbol,
-                    decimals: obj.DestToken.Decimals
+                    decimals: obj.DestToken.Decimals,
+                    isApprove: !obj.DestToken.IsAnyswapAdapter
                   } : false,
                   destChains: {
                     [obj.srcChainID]: {
@@ -138,13 +139,6 @@ export function CurrentBridgeInfo (chainId:any) {
             for (const obj of res.swapin) {
               const token = obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol
               if (!data.swapin[token]) {
-                // data.swapin[token] = {
-                //   name: obj.name,
-                //   symbol: obj.symbol,
-                //   decimals: obj.SrcToken.Decimals,
-                //   logoUrl: obj.logoUrl,
-                //   list: [formatBridgeInfo(obj, chainId)]
-                // }
                 data.swapin[token] = {
                   name: obj.name,
                   symbol: obj.symbol,
