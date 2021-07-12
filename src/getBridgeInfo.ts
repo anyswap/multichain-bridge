@@ -112,16 +112,16 @@ export function CurrentBridgeInfo (chainId:any) {
                       address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
                       name: obj.name,
                       symbol: obj.symbol,
-                      decimals: obj.SrcToken.Decimals
+                      decimals: obj.SrcToken.Decimals,
+                      BigValueThreshold: obj.DestToken.BigValueThreshold,
+                      ContractVersion: obj.DestToken.ContractVersion,
+                      MaximumSwap: obj.DestToken.MaximumSwap,
+                      MaximumSwapFee: obj.DestToken.MaximumSwapFee,
+                      MinimumSwap: obj.DestToken.MinimumSwap,
+                      MinimumSwapFee: obj.DestToken.MinimumSwapFee,
+                      SwapFeeRatePerMillion: obj.DestToken.SwapFeeRate,
                     }
                   },
-                  BigValueThreshold: obj.DestToken.BigValueThreshold,
-                  ContractVersion: obj.DestToken.ContractVersion,
-                  MaximumSwap: obj.DestToken.MaximumSwap,
-                  MaximumSwapFee: obj.DestToken.MaximumSwapFee,
-                  MinimumSwap: obj.DestToken.MinimumSwap,
-                  MinimumSwapFee: obj.DestToken.MinimumSwapFee,
-                  SwapFeeRatePerMillion: obj.DestToken.SwapFeeRate,
                 }
               } else {
                 if (obj.destChainID.toString() === chainId.toString()) {
@@ -152,16 +152,16 @@ export function CurrentBridgeInfo (chainId:any) {
                       address: obj.DestToken.ContractAddress.toLowerCase(),
                       name: obj.name,
                       symbol: obj.symbol,
-                      decimals: obj.DestToken.Decimals
+                      decimals: obj.DestToken.Decimals,
+                      BigValueThreshold: obj.SrcToken.BigValueThreshold,
+                      ContractVersion: obj.SrcToken.ContractVersion,
+                      MaximumSwap: obj.SrcToken.MaximumSwap,
+                      MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
+                      MinimumSwap: obj.SrcToken.MinimumSwap,
+                      MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
+                      SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
                     }
                   },
-                  BigValueThreshold: obj.SrcToken.BigValueThreshold,
-                  ContractVersion: obj.SrcToken.ContractVersion,
-                  MaximumSwap: obj.SrcToken.MaximumSwap,
-                  MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
-                  MinimumSwap: obj.SrcToken.MinimumSwap,
-                  MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
-                  SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
                 }
               } else {
                 if (obj.srcChainID.toString() === chainId.toString()) {
