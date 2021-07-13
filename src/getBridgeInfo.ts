@@ -131,7 +131,7 @@ export function CurrentBridgeInfo (chainId:any) {
                     symbol: obj.symbol,
                     decimals: obj.DestToken.Decimals,
                     logoUrl: obj.logoUrl,
-                    chainId: chainId,
+                    chainId: obj.srcChainID,
                     address: token,
                     underlying: isProxy ? {
                       address: obj.DestToken.DelegateToken.toLowerCase(),
@@ -141,8 +141,8 @@ export function CurrentBridgeInfo (chainId:any) {
                       isApprove: !obj.DestToken.IsAnyswapAdapter
                     } : false,
                     destChains: {
-                      [obj.srcChainID]: {
-                        address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
+                      [chainId]: {
+                        address: token,
                         name: obj.name,
                         symbol: obj.symbol,
                         decimals: obj.SrcToken.Decimals,
@@ -175,8 +175,8 @@ export function CurrentBridgeInfo (chainId:any) {
                     swapfeeon: 1
                   }
                   if (isNaN(obj.srcChainID)) {
-                    data.deposit[token].destChains[obj.srcChainID] = {
-                      address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
+                    data.deposit[token].destChains[chainId] = {
+                      address: token,
                       name: obj.name,
                       symbol: obj.symbol,
                       decimals: obj.SrcToken.Decimals,
