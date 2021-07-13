@@ -87,6 +87,7 @@ export function CurrentBridgeInfo (chainId:any) {
           const data:any = {
             swapin: {},
             swapout: {},
+            deposit: {}
           }
           if (res.swapout && res.swapout.length > 0) {
             for (const obj of res.swapout) {
@@ -120,8 +121,42 @@ export function CurrentBridgeInfo (chainId:any) {
                       MinimumSwap: obj.DestToken.MinimumSwap,
                       MinimumSwapFee: obj.DestToken.MinimumSwapFee,
                       SwapFeeRatePerMillion: obj.DestToken.SwapFeeRate,
+                      swapfeeon: 1
                     }
                   },
+                }
+                if (isNaN(obj.srcChainID)) {
+                  data.deposit[token] = {
+                    name: obj.name,
+                    symbol: obj.symbol,
+                    decimals: obj.DestToken.Decimals,
+                    logoUrl: obj.logoUrl,
+                    chainId: chainId,
+                    address: token,
+                    underlying: isProxy ? {
+                      address: obj.DestToken.DelegateToken.toLowerCase(),
+                      name: obj.name,
+                      symbol: obj.symbol,
+                      decimals: obj.DestToken.Decimals,
+                      isApprove: !obj.DestToken.IsAnyswapAdapter
+                    } : false,
+                    destChains: {
+                      [obj.srcChainID]: {
+                        address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
+                        name: obj.name,
+                        symbol: obj.symbol,
+                        decimals: obj.SrcToken.Decimals,
+                        BigValueThreshold: obj.SrcToken.BigValueThreshold,
+                        ContractVersion: obj.SrcToken.ContractVersion,
+                        MaximumSwap: obj.SrcToken.MaximumSwap,
+                        MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
+                        MinimumSwap: obj.SrcToken.MinimumSwap,
+                        MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
+                        SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
+                        swapfeeon: 1
+                      }
+                    },
+                  }
                 }
               } else {
                 if (obj.destChainID.toString() === chainId.toString()) {
@@ -129,7 +164,31 @@ export function CurrentBridgeInfo (chainId:any) {
                     address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
                     name: obj.name,
                     symbol: obj.symbol,
-                    decimals: obj.SrcToken.Decimals
+                    decimals: obj.SrcToken.Decimals,
+                    BigValueThreshold: obj.DestToken.BigValueThreshold,
+                    ContractVersion: obj.DestToken.ContractVersion,
+                    MaximumSwap: obj.DestToken.MaximumSwap,
+                    MaximumSwapFee: obj.DestToken.MaximumSwapFee,
+                    MinimumSwap: obj.DestToken.MinimumSwap,
+                    MinimumSwapFee: obj.DestToken.MinimumSwapFee,
+                    SwapFeeRatePerMillion: obj.DestToken.SwapFeeRate,
+                    swapfeeon: 1
+                  }
+                  if (isNaN(obj.srcChainID)) {
+                    data.deposit[token].destChains[obj.srcChainID] = {
+                      address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
+                      name: obj.name,
+                      symbol: obj.symbol,
+                      decimals: obj.SrcToken.Decimals,
+                      BigValueThreshold: obj.SrcToken.BigValueThreshold,
+                      ContractVersion: obj.SrcToken.ContractVersion,
+                      MaximumSwap: obj.SrcToken.MaximumSwap,
+                      MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
+                      MinimumSwap: obj.SrcToken.MinimumSwap,
+                      MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
+                      SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
+                      swapfeeon: 1
+                    }
                   }
                 }
               }
@@ -160,6 +219,7 @@ export function CurrentBridgeInfo (chainId:any) {
                       MinimumSwap: obj.SrcToken.MinimumSwap,
                       MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
                       SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
+                      swapfeeon: 1
                     }
                   },
                 }
@@ -169,7 +229,15 @@ export function CurrentBridgeInfo (chainId:any) {
                     address: obj.DestToken.ContractAddress.toLowerCase(),
                     name: obj.name,
                     symbol: obj.symbol,
-                    decimals: obj.DestToken.Decimals
+                    decimals: obj.DestToken.Decimals,
+                    BigValueThreshold: obj.SrcToken.BigValueThreshold,
+                    ContractVersion: obj.SrcToken.ContractVersion,
+                    MaximumSwap: obj.SrcToken.MaximumSwap,
+                    MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
+                    MinimumSwap: obj.SrcToken.MinimumSwap,
+                    MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
+                    SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
+                    swapfeeon: 1
                   }
                 }
                 // data.swapin[token].destChains.push(formatBridgeInfo(obj, chainId))
