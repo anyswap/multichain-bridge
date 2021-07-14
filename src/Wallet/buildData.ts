@@ -1,7 +1,7 @@
 import swapBTCABI from '../ABI/swapBTCABI.json'
 import swapETHABI from '../ABI/swapETHABI.json'
 import {getContract, web3Fn} from './web3'
-import {getContract as getMMContract} from './metamask'
+import {getContract as getMMContract, getProvider} from './metamask'
 import {specSymbol, Status, ChainId} from '../constants'
 import {
   isAddress
@@ -182,6 +182,12 @@ export function signSwapoutData ({
     return signSwapoutErc20Data({value, address, token})
   }
 }
+// const provider = getProvider()
+// console.log(provider)
+// console.log(provider.getSigner())
+// provider.send('eth_requestAccounts', []).then(res => {
+//   console.log(res)
+// })
 
 export function signSwapinData ({
   value,
@@ -204,26 +210,52 @@ export function signSwapinData ({
       })
       return
     }
-    if (!web3Fn.utils.isAddress(token)) {
+    if (!token) {
       resolve({
         msg: Status.Error,
         error: 'Token verification failed!'
       })
       return
     }
-    const contract = getMMContract(swapBTCABI, token)
-    contract.transfer(address, value).then((res:any) => {
-      // console.log(res)
-      resolve({
-        msg: Status.Success,
-        info: res
+    console.log(token)
+    if (web3Fn.utils.isAddress(token)) {
+      const contract = getMMContract(swapBTCABI, token)
+      contract.transfer(address, value).then((res:any) => {
+        // console.log(res)
+        resolve({
+          msg: Status.Success,
+          info: res
+        })
+      }).catch((err:any) => {
+        console.log(err)
+        resolve({
+          msg: Status.Error,
+          error: err?.data?.message ? err?.data?.message : (err?.message ? err?.message : err.toString())
+        })
       })
-    }).catch((err:any) => {
-      console.log(err)
-      resolve({
-        msg: Status.Error,
-        error: err?.data?.message ? err?.data?.message : (err?.message ? err?.message : err.toString())
+    } else {
+      const provider = getProvider()
+      provider.send('eth_requestAccounts', []).then(res => {
+        console.log(res)
+        const data = {
+          from: res[0],
+          to: address,
+          value: value
+        }
+        console.log(data)
+        provider.send('eth_sendTransaction', [data]).then((res:any) => {
+          resolve({
+            msg: Status.Success,
+            info: res
+          })
+        }).catch((err:any) => {
+          console.log(err)
+          resolve({
+            msg: Status.Error,
+            error: err?.data?.message ? err?.data?.message : (err?.message ? err?.message : err.toString())
+          })
+        })
       })
-    })
+    }
   })
 }

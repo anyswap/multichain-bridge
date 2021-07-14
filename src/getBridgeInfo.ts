@@ -126,6 +126,7 @@ export function CurrentBridgeInfo (chainId:any) {
                   },
                 }
                 if (isNaN(obj.srcChainID)) {
+                  // console.log(obj)
                   data.deposit[token] = {
                     name: obj.name,
                     symbol: obj.symbol,
@@ -153,6 +154,7 @@ export function CurrentBridgeInfo (chainId:any) {
                         MinimumSwap: obj.SrcToken.MinimumSwap,
                         MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
                         SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
+                        DepositAddress: obj.SrcToken.DepositAddress,
                         swapfeeon: 1
                       }
                     },
@@ -187,6 +189,7 @@ export function CurrentBridgeInfo (chainId:any) {
                       MinimumSwap: obj.SrcToken.MinimumSwap,
                       MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
                       SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
+                      DepositAddress: obj.SrcToken.DepositAddress,
                       swapfeeon: 1
                     }
                   }
@@ -219,6 +222,7 @@ export function CurrentBridgeInfo (chainId:any) {
                       MinimumSwap: obj.SrcToken.MinimumSwap,
                       MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
                       SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
+                      DepositAddress: obj.SrcToken.DepositAddress,
                       swapfeeon: 1
                     }
                   },
@@ -237,6 +241,7 @@ export function CurrentBridgeInfo (chainId:any) {
                     MinimumSwap: obj.SrcToken.MinimumSwap,
                     MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
                     SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
+                    DepositAddress: obj.SrcToken.DepositAddress,
                     swapfeeon: 1
                   }
                 }
