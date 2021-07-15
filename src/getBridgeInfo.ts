@@ -108,6 +108,7 @@ export function CurrentBridgeInfo (chainId:any) {
                     decimals: obj.DestToken.Decimals,
                     isApprove: !obj.DestToken.IsAnyswapAdapter
                   } : false,
+                  pairid: obj.PairID,
                   destChains: {
                     [obj.srcChainID]: {
                       address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
@@ -141,6 +142,7 @@ export function CurrentBridgeInfo (chainId:any) {
                       decimals: obj.DestToken.Decimals,
                       isApprove: !obj.DestToken.IsAnyswapAdapter
                     } : false,
+                    pairid: obj.PairID,
                     destChains: {
                       [chainId]: {
                         address: token,
@@ -209,6 +211,7 @@ export function CurrentBridgeInfo (chainId:any) {
                   chainId: chainId,
                   address: token,
                   underlying: false,
+                  pairid: obj.PairID,
                   destChains: {
                     [obj.destChainID]: {
                       address: obj.DestToken.ContractAddress.toLowerCase(),
