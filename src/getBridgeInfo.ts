@@ -93,16 +93,17 @@ export function CurrentBridgeInfo (chainId:any) {
             for (const obj of res.swapout) {
               const isProxy = obj.DestToken.DelegateToken ? 1 : 0
               const token = isProxy ? obj.DestToken.DelegateToken.toLowerCase() : (obj.DestToken.ContractAddress ? obj.DestToken.ContractAddress.toLowerCase() : '')
-              if (!data.swapout[token]) {
-                data.swapout[token] = {
+              const contractAddress = obj.DestToken.ContractAddress ? obj.DestToken.ContractAddress.toLowerCase() : obj.symbol
+              if (!data.swapout[contractAddress]) {
+                data.swapout[contractAddress] = {
                   name: obj.name,
                   symbol: obj.symbol,
                   decimals: obj.DestToken.Decimals,
                   logoUrl: obj.logoUrl,
                   chainId: chainId,
-                  address: token,
+                  address: contractAddress,
                   underlying: isProxy ? {
-                    address: obj.DestToken.DelegateToken.toLowerCase(),
+                    address: token,
                     name: obj.name,
                     symbol: obj.symbol,
                     decimals: obj.DestToken.Decimals,
@@ -128,15 +129,15 @@ export function CurrentBridgeInfo (chainId:any) {
                 }
                 if (isNaN(obj.srcChainID)) {
                   // console.log(obj)
-                  data.deposit[token] = {
+                  data.deposit[contractAddress] = {
                     name: obj.name,
                     symbol: obj.symbol,
                     decimals: obj.DestToken.Decimals,
                     logoUrl: obj.logoUrl,
                     chainId: obj.srcChainID,
-                    address: token,
+                    address: contractAddress,
                     underlying: isProxy ? {
-                      address: obj.DestToken.DelegateToken.toLowerCase(),
+                      address: token,
                       name: obj.name,
                       symbol: obj.symbol,
                       decimals: obj.DestToken.Decimals,
@@ -145,7 +146,7 @@ export function CurrentBridgeInfo (chainId:any) {
                     pairid: obj.PairID,
                     destChains: {
                       [chainId]: {
-                        address: token,
+                        address: contractAddress,
                         name: obj.name,
                         symbol: obj.symbol,
                         decimals: obj.SrcToken.Decimals,
@@ -180,7 +181,7 @@ export function CurrentBridgeInfo (chainId:any) {
                   }
                   if (isNaN(obj.srcChainID)) {
                     data.deposit[token].destChains[chainId] = {
-                      address: token,
+                      address: contractAddress,
                       name: obj.name,
                       symbol: obj.symbol,
                       decimals: obj.SrcToken.Decimals,
