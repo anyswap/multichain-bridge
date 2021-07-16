@@ -116,7 +116,7 @@ export function signSwapoutSpecData ({
       console.log(res)
       resolve({
         msg: Status.Success,
-        info: res
+        info: res.hash
       })
     }).catch((err:any) => {
       resolve({
@@ -159,7 +159,7 @@ export function signSwapoutErc20Data ({
       console.log(res)
       resolve({
         msg: Status.Success,
-        info: res
+        info: res.hash
       })
     }).catch((err:any) => {
       resolve({
@@ -224,7 +224,7 @@ export function signSwapinData ({
         // console.log(res)
         resolve({
           msg: Status.Success,
-          info: res
+          info: res.hash
         })
       }).catch((err:any) => {
         console.log(err)
