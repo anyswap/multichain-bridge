@@ -109,9 +109,9 @@ export function CurrentBridgeInfo (chainId:any) {
                     decimals: obj.DestToken.Decimals,
                     isApprove: !obj.DestToken.IsAnyswapAdapter
                   } : false,
-                  pairid: obj.PairID,
                   destChains: {
                     [obj.srcChainID]: {
+                      pairid: obj.PairID,
                       address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
                       name: obj.name,
                       symbol: obj.symbol,
@@ -143,9 +143,9 @@ export function CurrentBridgeInfo (chainId:any) {
                       decimals: obj.DestToken.Decimals,
                       isApprove: !obj.DestToken.IsAnyswapAdapter
                     } : false,
-                    pairid: obj.PairID,
                     destChains: {
                       [chainId]: {
+                        pairid: obj.PairID,
                         address: contractAddress,
                         name: obj.name,
                         symbol: obj.symbol,
@@ -166,6 +166,7 @@ export function CurrentBridgeInfo (chainId:any) {
               } else {
                 if (obj.destChainID.toString() === chainId.toString()) {
                   data.swapout[token].destChains[obj.srcChainID] = {
+                    pairid: obj.PairID,
                     address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
                     name: obj.name,
                     symbol: obj.symbol,
@@ -181,6 +182,7 @@ export function CurrentBridgeInfo (chainId:any) {
                   }
                   if (isNaN(obj.srcChainID)) {
                     data.deposit[token].destChains[chainId] = {
+                      pairid: obj.PairID,
                       address: contractAddress,
                       name: obj.name,
                       symbol: obj.symbol,
@@ -212,9 +214,9 @@ export function CurrentBridgeInfo (chainId:any) {
                   chainId: chainId,
                   address: token,
                   underlying: false,
-                  pairid: obj.PairID,
                   destChains: {
                     [obj.destChainID]: {
+                      pairid: obj.PairID,
                       address: obj.DestToken.ContractAddress.toLowerCase(),
                       name: obj.name,
                       symbol: obj.symbol,
@@ -234,6 +236,7 @@ export function CurrentBridgeInfo (chainId:any) {
               } else {
                 if (obj.srcChainID.toString() === chainId.toString()) {
                   data.swapin[token].destChains[obj.destChainID] = {
+                    pairid: obj.PairID,
                     address: obj.DestToken.ContractAddress.toLowerCase(),
                     name: obj.name,
                     symbol: obj.symbol,
