@@ -28,6 +28,17 @@ const BLOCK = {
   wif: 0x9a,
 }
 
+const COLOSSUSXT = {
+  messagePrefix: '\x19ColossusXT Signed Message:\n',
+  bip32: {
+    public: 0x019da462,
+    private: 0x019d9cfe,
+  },
+  pubKeyHash: 0x1e,
+  scriptHash: 0x0d,
+  wif: 0xd4,
+}
+
 function getNetwork (coin?:string) {
   let network = NETWORK
   coin = coin ? coin.toUpperCase() : ''
@@ -37,6 +48,8 @@ function getNetwork (coin?:string) {
     network = LITECOIN
   } else if (coin.indexOf('BLOCK') !== -1) {
     network = BLOCK
+  } else if (coin.indexOf('COLX') !== -1) {
+    network = COLOSSUSXT
   } 
   return network
 }
