@@ -9,7 +9,7 @@ export const dislineUrl = baseURL + '/v2/disline'
 export const swapinStatusUrl = baseURL + '/v2/getHashStatus'
 export const swapoutStatusUrl = baseURL + '/v2/getWithdrawHashStatus'
 
-export const timeout = 1000 * 60 * 10
+export const timeout = 1000 * 60 * 30
 
 export const LOCAL_DATA_LABEL = 'ANYSWAP-BRIDGE-SDK-V1-'
 
