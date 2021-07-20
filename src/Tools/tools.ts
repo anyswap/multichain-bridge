@@ -93,14 +93,14 @@ export function getLocalData (account:string, chainId:any, token:string, dbType?
     const localStr = lsDB.getItem(LOCAL_DATA_LABEL + token)
     if (localStr) {
       const localData = JSON.parse(localStr)
-      if (!localData[chainId]) {
+      if (!localData[account]) {
         return false
-      } else if (!localData[chainId][account]) {
+      } else if (!localData[account][chainId]) {
         return false
-      } else if ( ((Date.now() - localData[chainId][account].timestamp) > timeout)) {
+      } else if ( ((Date.now() - localData[account][chainId].timestamp) > timeout)) {
         return false
       } else {
-        return localData[chainId][account].data
+        return localData[account][chainId].data
       }
     } else {
       return false
