@@ -74,6 +74,7 @@ export function DislineBridgeInfo (chainId:any) {
 const CURRENTCHAIN = 'CURRENTCHAIN'
 export function CurrentBridgeInfo (chainId:any) {
   return new Promise(resolve => {
+    // console.log(chainId)
     const lObj = getLocalData(CURRENTCHAIN, chainId, CURRENTCHAIN)
     if (lObj && !(Object.getOwnPropertyNames(lObj.swapin).length === 0 && Object.getOwnPropertyNames(lObj.swapout).length === 0)) {
       // console.log('swapin', Object.getOwnPropertyNames(lObj.swapin).length)

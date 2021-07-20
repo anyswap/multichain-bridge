@@ -114,24 +114,25 @@ export function setLocalData (account:string, chainId:any, token:string, data:an
   const lsDB = useLocalDB(dbType)
   if (lsDB) {
     let lObj:any = {}
-    const lstr = lsDB.getItem(dbType)
+    const lstr = lsDB.getItem(LOCAL_DATA_LABEL + token)
     if (!lstr) {
-      lObj[chainId] = {}
-      lObj[chainId][account] = {}
-      lObj[chainId][account] = {
+      lObj[account] = {}
+      lObj[account][chainId] = {}
+      lObj[account][chainId] = {
         data: data,
         timestamp: Date.now()
       }
     } else {
       lObj = JSON.parse(lstr)
-      if (!lObj[chainId]) {
-        lObj[chainId] = {}
-        lObj[chainId][account] = {
+      // console.log(lObj)
+      if (!lObj[account]) {
+        lObj[account] = {}
+        lObj[account][chainId] = {
           data: data,
           timestamp: Date.now()
         }
-      } else if (!lObj[chainId][account]) {
-        lObj[chainId][account] = {
+      } else if (!lObj[account][chainId]) {
+        lObj[account][chainId] = {
           data: data,
           timestamp: Date.now()
         }
