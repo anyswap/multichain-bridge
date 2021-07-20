@@ -93,14 +93,14 @@ export function getLocalData (account:string, chainId:any, token:string, dbType?
     const localStr = lsDB.getItem(LOCAL_DATA_LABEL + token)
     if (localStr) {
       const localData = JSON.parse(localStr)
-      if (!localData[account]) {
+      if (!localData[chainId]) {
         return false
-      } else if (!localData[account][chainId]) {
+      } else if (!localData[chainId][account]) {
         return false
-      } else if ( ((Date.now() - localData[account][chainId].timestamp) > timeout)) {
+      } else if ( ((Date.now() - localData[chainId][account].timestamp) > timeout)) {
         return false
       } else {
-        return localData[account][chainId].data
+        return localData[chainId][account].data
       }
     } else {
       return false
@@ -116,23 +116,23 @@ export function setLocalData (account:string, chainId:any, token:string, data:an
     let lObj:any = {}
     const lstr = lsDB.getItem(LOCAL_DATA_LABEL + token)
     if (!lstr) {
-      lObj[account] = {}
-      lObj[account][chainId] = {}
-      lObj[account][chainId] = {
+      lObj[chainId] = {}
+      lObj[chainId][account] = {}
+      lObj[chainId][account] = {
         data: data,
         timestamp: Date.now()
       }
     } else {
       lObj = JSON.parse(lstr)
       // console.log(lObj)
-      if (!lObj[account]) {
-        lObj[account] = {}
-        lObj[account][chainId] = {
+      if (!lObj[chainId]) {
+        lObj[chainId] = {}
+        lObj[chainId][account] = {
           data: data,
           timestamp: Date.now()
         }
-      } else if (!lObj[account][chainId]) {
-        lObj[account][chainId] = {
+      } else if (!lObj[chainId][account]) {
+        lObj[chainId][account] = {
           data: data,
           timestamp: Date.now()
         }
