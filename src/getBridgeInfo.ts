@@ -76,7 +76,9 @@ export function CurrentBridgeInfo (chainId:any) {
   return new Promise(resolve => {
     // console.log(chainId)
     const lObj = getLocalData(CURRENTCHAIN, chainId, CURRENTCHAIN)
+    // console.log(lObj)
     if (lObj && !(Object.getOwnPropertyNames(lObj.swapin).length === 0 && Object.getOwnPropertyNames(lObj.swapout).length === 0)) {
+      
       // console.log('swapin', Object.getOwnPropertyNames(lObj.swapin).length)
       // console.log('swapout', Object.getOwnPropertyNames(lObj.swapout).length)
       resolve(lObj)

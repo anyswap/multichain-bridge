@@ -93,13 +93,19 @@ export function getLocalData (account:string, chainId:any, token:string, dbType?
     const localStr = lsDB.getItem(LOCAL_DATA_LABEL + token)
     if (localStr) {
       const localData = JSON.parse(localStr)
+      // console.log(localData)
+      // console.log(LOCAL_DATA_LABEL + token)
       if (!localData[chainId]) {
+        // console.log(1)
         return false
       } else if (!localData[chainId][account]) {
+        // console.log(2)
         return false
       } else if ( ((Date.now() - localData[chainId][account].timestamp) > timeout)) {
+        // console.log(3)
         return false
       } else {
+        // console.log(4)
         return localData[chainId][account].data
       }
     } else {
@@ -131,7 +137,7 @@ export function setLocalData (account:string, chainId:any, token:string, data:an
           data: data,
           timestamp: Date.now()
         }
-      } else if (!lObj[chainId][account]) {
+      } else {
         lObj[chainId][account] = {
           data: data,
           timestamp: Date.now()
