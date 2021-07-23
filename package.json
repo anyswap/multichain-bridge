@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "1.1.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -31,9 +31,10 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "anyswapsdk",
+  "name": "anyswap-bridge-sdk",
   "author": "d_winter",
   "module": "dist/anyswapsdk.esm.js",
+  "repository": "https://github.com/anyswap/anyswap-bridge-sdk.git",
   "size-limit": [
     {
       "path": "dist/anyswapsdk.cjs.production.min.js",
