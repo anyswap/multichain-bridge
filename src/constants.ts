@@ -9,6 +9,7 @@ export const toChainUrl = baseURL + '/v2/tokenlist'
 export const dislineUrl = baseURL + '/v2/disline'
 export const swapinStatusUrl = baseURL + '/v2/getHashStatus'
 export const swapoutStatusUrl = baseURL + '/v2/getWithdrawHashStatus'
+export const chainInfoUrl = baseURL + '/data/bridgeChainInfo'
 
 export const timeout = 1000 * 60 * 30
 
