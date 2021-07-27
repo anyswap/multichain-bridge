@@ -76,3 +76,4 @@ typings/
 .fusebox/
 
 dist
+package-lock.json

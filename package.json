@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -31,17 +31,17 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "anyswap-bridge-sdk",
+  "name": "multichain-bridge",
   "author": "d_winter",
-  "module": "dist/anyswapsdk.esm.js",
+  "module": "dist/multichain-bridge.esm.js",
   "repository": "https://github.com/anyswap/anyswap-bridge-sdk.git",
   "size-limit": [
     {
-      "path": "dist/anyswapsdk.cjs.production.min.js",
+      "path": "dist/multichain-bridge.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/anyswapsdk.esm.js",
+      "path": "dist/multichain-bridge.esm.js",
       "limit": "10 KB"
     }
   ],

@@ -72,193 +72,22 @@ export function DislineBridgeInfo (chainId:any) {
 //   }
 // }
 const CURRENTCHAIN = 'CURRENTCHAIN'
+// GetTokenListByChainID
+// GetTokenListByTokenAddr
+// GetChainList
 export function CurrentBridgeInfo (chainId:any) {
   return new Promise(resolve => {
     // console.log(chainId)
     const lObj = getLocalData(CURRENTCHAIN, chainId, CURRENTCHAIN)
     // console.log(lObj)
     if (lObj && !(Object.getOwnPropertyNames(lObj.swapin).length === 0 && Object.getOwnPropertyNames(lObj.swapout).length === 0)) {
-      
-      // console.log('swapin', Object.getOwnPropertyNames(lObj.swapin).length)
-      // console.log('swapout', Object.getOwnPropertyNames(lObj.swapout).length)
       resolve(lObj)
     } else {
       getUrlData({url: toChainUrl + '/' + chainId}).then((res:any) => {
         if (res && res.msg && res.msg === Status.Error) {
           resolve('')
         } else {
-          const data:any = {
-            swapin: {},
-            swapout: {},
-            deposit: {}
-          }
-          if (res.swapout && res.swapout.length > 0) {
-            for (const obj of res.swapout) {
-              const isProxy = obj.DestToken.DelegateToken ? 1 : 0
-              const token = isProxy ? obj.DestToken.DelegateToken.toLowerCase() : (obj.DestToken.ContractAddress ? obj.DestToken.ContractAddress.toLowerCase() : '')
-              const contractAddress = obj.DestToken.ContractAddress ? obj.DestToken.ContractAddress.toLowerCase() : obj.symbol
-              if (!data.swapout[contractAddress]) {
-                data.swapout[contractAddress] = {
-                  name: obj.name,
-                  symbol: obj.symbol,
-                  decimals: obj.DestToken.Decimals,
-                  logoUrl: obj.logoUrl,
-                  chainId: chainId,
-                  address: contractAddress,
-                  underlying: isProxy ? {
-                    address: token,
-                    name: obj.name,
-                    symbol: obj.symbol,
-                    decimals: obj.DestToken.Decimals,
-                    isApprove: !obj.DestToken.IsAnyswapAdapter
-                  } : false,
-                  destChains: {
-                    [obj.srcChainID]: {
-                      pairid: obj.PairID,
-                      address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
-                      name: obj.name,
-                      symbol: obj.symbol,
-                      decimals: obj.SrcToken.Decimals,
-                      BigValueThreshold: obj.DestToken.BigValueThreshold,
-                      ContractVersion: obj.DestToken.ContractVersion,
-                      MaximumSwap: obj.DestToken.MaximumSwap,
-                      MaximumSwapFee: obj.DestToken.MaximumSwapFee,
-                      MinimumSwap: obj.DestToken.MinimumSwap,
-                      MinimumSwapFee: obj.DestToken.MinimumSwapFee,
-                      SwapFeeRatePerMillion: obj.DestToken.SwapFeeRate,
-                      swapfeeon: 1
-                    }
-                  },
-                }
-                if (isNaN(obj.srcChainID)) {
-                  // console.log(obj)
-                  data.deposit[contractAddress] = {
-                    name: obj.name,
-                    symbol: obj.symbol,
-                    decimals: obj.DestToken.Decimals,
-                    logoUrl: obj.logoUrl,
-                    chainId: obj.srcChainID,
-                    address: contractAddress,
-                    underlying: isProxy ? {
-                      address: token,
-                      name: obj.name,
-                      symbol: obj.symbol,
-                      decimals: obj.DestToken.Decimals,
-                      isApprove: !obj.DestToken.IsAnyswapAdapter
-                    } : false,
-                    destChains: {
-                      [chainId]: {
-                        pairid: obj.PairID,
-                        address: contractAddress,
-                        name: obj.name,
-                        symbol: obj.symbol,
-                        decimals: obj.SrcToken.Decimals,
-                        BigValueThreshold: obj.SrcToken.BigValueThreshold,
-                        ContractVersion: obj.SrcToken.ContractVersion,
-                        MaximumSwap: obj.SrcToken.MaximumSwap,
-                        MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
-                        MinimumSwap: obj.SrcToken.MinimumSwap,
-                        MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
-                        SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
-                        DepositAddress: obj.SrcToken.DepositAddress,
-                        swapfeeon: 1
-                      }
-                    },
-                  }
-                }
-              } else {
-                if (obj.destChainID.toString() === chainId.toString()) {
-                  data.swapout[token].destChains[obj.srcChainID] = {
-                    pairid: obj.PairID,
-                    address: obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol,
-                    name: obj.name,
-                    symbol: obj.symbol,
-                    decimals: obj.SrcToken.Decimals,
-                    BigValueThreshold: obj.DestToken.BigValueThreshold,
-                    ContractVersion: obj.DestToken.ContractVersion,
-                    MaximumSwap: obj.DestToken.MaximumSwap,
-                    MaximumSwapFee: obj.DestToken.MaximumSwapFee,
-                    MinimumSwap: obj.DestToken.MinimumSwap,
-                    MinimumSwapFee: obj.DestToken.MinimumSwapFee,
-                    SwapFeeRatePerMillion: obj.DestToken.SwapFeeRate,
-                    swapfeeon: 1
-                  }
-                  if (isNaN(obj.srcChainID)) {
-                    data.deposit[token].destChains[chainId] = {
-                      pairid: obj.PairID,
-                      address: contractAddress,
-                      name: obj.name,
-                      symbol: obj.symbol,
-                      decimals: obj.SrcToken.Decimals,
-                      BigValueThreshold: obj.SrcToken.BigValueThreshold,
-                      ContractVersion: obj.SrcToken.ContractVersion,
-                      MaximumSwap: obj.SrcToken.MaximumSwap,
-                      MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
-                      MinimumSwap: obj.SrcToken.MinimumSwap,
-                      MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
-                      SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
-                      DepositAddress: obj.SrcToken.DepositAddress,
-                      swapfeeon: 1
-                    }
-                  }
-                }
-              }
-            }
-          }
-          if (res.swapin && res.swapin.length > 0) {
-            for (const obj of res.swapin) {
-              const token = obj.SrcToken.ContractAddress ? obj.SrcToken.ContractAddress.toLowerCase() : obj.symbol
-              if (!data.swapin[token]) {
-                data.swapin[token] = {
-                  name: obj.name,
-                  symbol: obj.symbol,
-                  decimals: obj.SrcToken.Decimals,
-                  logoUrl: obj.logoUrl,
-                  chainId: chainId,
-                  address: token,
-                  underlying: false,
-                  destChains: {
-                    [obj.destChainID]: {
-                      pairid: obj.PairID,
-                      address: obj.DestToken.ContractAddress.toLowerCase(),
-                      name: obj.name,
-                      symbol: obj.symbol,
-                      decimals: obj.DestToken.Decimals,
-                      BigValueThreshold: obj.SrcToken.BigValueThreshold,
-                      ContractVersion: obj.SrcToken.ContractVersion,
-                      MaximumSwap: obj.SrcToken.MaximumSwap,
-                      MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
-                      MinimumSwap: obj.SrcToken.MinimumSwap,
-                      MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
-                      SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
-                      DepositAddress: obj.SrcToken.DepositAddress,
-                      swapfeeon: 1
-                    }
-                  },
-                }
-              } else {
-                if (obj.srcChainID.toString() === chainId.toString()) {
-                  data.swapin[token].destChains[obj.destChainID] = {
-                    pairid: obj.PairID,
-                    address: obj.DestToken.ContractAddress.toLowerCase(),
-                    name: obj.name,
-                    symbol: obj.symbol,
-                    decimals: obj.DestToken.Decimals,
-                    BigValueThreshold: obj.SrcToken.BigValueThreshold,
-                    ContractVersion: obj.SrcToken.ContractVersion,
-                    MaximumSwap: obj.SrcToken.MaximumSwap,
-                    MaximumSwapFee: obj.SrcToken.MaximumSwapFee,
-                    MinimumSwap: obj.SrcToken.MinimumSwap,
-                    MinimumSwapFee: obj.SrcToken.MinimumSwapFee,
-                    SwapFeeRatePerMillion: obj.SrcToken.SwapFeeRate,
-                    DepositAddress: obj.SrcToken.DepositAddress,
-                    swapfeeon: 1
-                  }
-                }
-                // data.swapin[token].destChains.push(formatBridgeInfo(obj, chainId))
-              }
-            }
-          }
+          const data:any = res
           setLocalData(CURRENTCHAIN, chainId, CURRENTCHAIN, data)
           resolve(data)
         }
