@@ -40,7 +40,7 @@
   "name": "multichain-bridge",
   "author": "d_winter",
   "module": "dist/multichain-bridge.esm.js",
-  "repository": "https://github.com/anyswap/anyswap-bridge-sdk.git",
+  "repository": "https://github.com/anyswap/multichain-bridge.git",
   "size-limit": [
     {
       "path": "dist/multichain-bridge.cjs.production.min.js",
