@@ -173,3 +173,27 @@ Receive address
 ```bash
 Token address
 ```
+
+## createAddress
+### param1
+```bash
+Erc20 address
+```
+### param2
+```bash
+Chain label
+```
+### param3
+```bash
+Deposit address
+```
+
+## isAddress
+### param1
+```bash
+Address
+```
+### param2
+```bash
+Chain label
+```

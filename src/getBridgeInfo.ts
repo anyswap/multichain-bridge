@@ -54,55 +54,59 @@ export function GetTokenListByChainID ({
     // console.log(chainId)
     const lObj = getLocalData(CURRENTCHAIN, srcChainID, CURRENTCHAIN)
     // console.log(lObj)
-    if (lObj && !(Object.getOwnPropertyNames(lObj.swapin).length === 0 && Object.getOwnPropertyNames(lObj.swapout).length === 0)) {
-      const bsckData:any = {
-        ...lObj,
-        swapin: {}
-      }
-      if (destChainID) {
-        for (const token in lObj.swapin) {
-          if (tokenList.length > 0 && !tokenList.includes(token)) continue
-          bsckData.swapin[token] = {
-            ...lObj.swapin[token],
-            destChains: {
-              [destChainID]: {
-                ...lObj.swapin[token].destChains[destChainID]
-              }
-            }
-          }
-        }
-        resolve({swapin: bsckData.swapin})
-      } else {
-        resolve(lObj)
-      }
+    if (lObj) {
+      resolve(lObj)
     } else {
       getUrlData({url: toChainUrl + '/' + srcChainID}).then((res:any) => {
         if (res && res.msg && res.msg === Status.Error) {
           resolve('')
         } else {
           const data:any = res
-          const bsckData:any = {
-            ...data,
-            swapin: {}
-          }
-          if (destChainID) {
-            for (const token in data.swapin) {
-              if (tokenList.length > 0 && !tokenList.includes(token)) continue
-              bsckData.swapin[token] = {
-                ...data.swapin[token],
-                destChains: {
-                  [destChainID]: {
-                    ...data.swapin[token].destChains[destChainID]
+          let bsckData:any = {}
+          if (destChainID && tokenList.length > 0) {
+            for (const key in data) {
+              for (const token in data[key]) {
+                if (tokenList.length > 0 && !tokenList.includes(token)) continue
+                if (!bsckData[key]) bsckData[key] = {}
+                bsckData[key][token] = {
+                  ...data[key][token],
+                  destChains: {
+                    [destChainID]: {
+                      ...data[key][token].destChains[destChainID]
+                    }
                   }
                 }
               }
             }
-            setLocalData(CURRENTCHAIN, srcChainID, CURRENTCHAIN, bsckData.swapin)
-            resolve({swapin: bsckData.swapin})
+          } else if (!destChainID && tokenList.length > 0) {
+            for (const key in data) {
+              for (const token in data[key]) {
+                if (tokenList.length > 0 && !tokenList.includes(token)) continue
+                if (!bsckData[key]) bsckData[key] = {}
+                bsckData[key][token] = {
+                  ...data[key][token]
+                }
+              }
+            }
+          } else if (destChainID && tokenList.length <= 0) {
+            for (const key in data) {
+              for (const token in data[key]) {
+                if (!bsckData[key]) bsckData[key] = {}
+                bsckData[key][token] = {
+                  ...data[key][token],
+                  destChains: {
+                    [destChainID]: {
+                      ...data[key][token].destChains[destChainID]
+                    }
+                  }
+                }
+              }
+            }
           } else {
-            setLocalData(CURRENTCHAIN, srcChainID, CURRENTCHAIN, data)
-            resolve(data)
+            bsckData = data
           }
+          setLocalData(CURRENTCHAIN, srcChainID, CURRENTCHAIN, bsckData)
+          resolve(bsckData)
         }
       })
     }
