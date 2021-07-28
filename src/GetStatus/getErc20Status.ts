@@ -32,7 +32,7 @@ interface StatusParams {
   account:string,
   destChainID: ChainId,
   pairid:string,
-  srcChainID:string | number,
+  srcChainID:ChainId,
   type?:string,
 }
 

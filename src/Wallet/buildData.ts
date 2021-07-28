@@ -11,7 +11,7 @@ interface BuildParams {
   value: string | number,
   address: string,
   token: string | undefined,
-  destChain?: ChainId
+  destChain?: ChainId | undefined
 }
 
 export function buildSwapoutSpecData ({
