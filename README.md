@@ -1,4 +1,10 @@
 # multichain-bridge
+
+
+## Install
+```sh
+npm i multichain-bridge
+```
  
 ## GetTokenListByChainID
 ```bash
@@ -196,8 +202,4 @@ Address
 ### param2
 ```bash
 Chain label
-```
-
-```sh
-npm i multichain-bridge
 ```
