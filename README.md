@@ -197,3 +197,7 @@ Address
 ```bash
 Chain label
 ```
+
+```sh
+npm i multichain-bridge
+```
