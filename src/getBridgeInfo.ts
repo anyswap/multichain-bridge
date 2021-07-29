@@ -1,6 +1,4 @@
-// import bridgeList from './data/bridgeList.json'
-
-import {toChainUrl, dislineUrl, Status, chainInfoUrl} from './constants'
+import {toChainUrl, dislineUrl, Status, chainInfoUrl, routerInfoUrl, routerVersion} from './constants'
 import {
   getUrlData,
   getLocalData,
@@ -113,8 +111,80 @@ export function GetTokenListByChainID ({
   })
 }
 
+const ROUTERTOKENLIST = 'ROUTERTOKENLIST'
+export function GetRouterListByChainID ({
+  srcChainID,
+  destChainID,
+  tokenList = []
+}: {
+  srcChainID:any,
+  destChainID?:any,
+  tokenList?: Array<string>
+}) {
+  return new Promise(resolve => {
+    // console.log(chainId)
+    console.log(srcChainID)
+    if (!srcChainID) {
+      resolve('')
+    } else {
+      const lObj = getLocalData(ROUTERTOKENLIST, srcChainID, ROUTERTOKENLIST)
+      if (lObj) {
+        resolve(lObj)
+      } else {
+        if (!srcChainID) {
+          resolve('')
+        } else {
+          getUrlData({url: `${routerInfoUrl}?chainId=${srcChainID}&version=${routerVersion}`}).then((res:any) => {
+            if (res && res.msg && res.msg === Status.Error) {
+              resolve('')
+            } else {
+              const data:any = res
+              let bsckData:any = {}
+              if (destChainID && tokenList.length > 0) {
+                for (const token in data) {
+                  if (tokenList.length > 0 && !tokenList.includes(token)) continue
+                  bsckData[token] = {
+                    ...data[token],
+                    destChains: {
+                      [destChainID]: {
+                        ...data[token].destChains[destChainID]
+                      }
+                    }
+                  }
+                }
+              } else if (!destChainID && tokenList.length > 0) {
+                for (const token in data) {
+                  if (tokenList.length > 0 && !tokenList.includes(token)) continue
+                  bsckData[token] = {
+                    ...data[token]
+                  }
+                }
+              } else if (destChainID && tokenList.length <= 0) {
+                for (const token in data) {
+                  bsckData[token] = {
+                    ...data[token],
+                    destChains: {
+                      [destChainID]: {
+                        ...data[token].destChains[destChainID]
+                      }
+                    }
+                  }
+                }
+              } else {
+                bsckData = data
+              }
+              setLocalData(ROUTERTOKENLIST, srcChainID, ROUTERTOKENLIST, bsckData)
+              resolve(bsckData)
+            }
+          })
+        }
+      }
+    }
+  })
+}
+
 /**
- * 获取指定链与链的币种信息，支持跨链和提现（swapin/swapout）
+ * 
  */
 const CHAININFO = 'CHAININFO'
 export function GetChainList () {

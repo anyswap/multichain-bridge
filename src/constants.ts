@@ -9,6 +9,9 @@ export const dislineUrl = baseURL + '/v2/disline'
 export const swapinStatusUrl = baseURL + '/v2/getHashStatus'
 export const swapoutStatusUrl = baseURL + '/v2/getWithdrawHashStatus'
 export const chainInfoUrl = baseURL + '/data/bridgeChainInfo'
+// https://bridgeapi.anyswap.exchange/v3/serverinfo?chainId=56&version=STABLEV3
+export const routerInfoUrl = baseURL + '/v3/serverinfo'
+export const routerVersion = 'STABLEV3'
 
 export const timeout = 1000 * 60 * 30
 
