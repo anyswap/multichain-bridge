@@ -16,3 +16,13 @@ export function getContract (Abi:any, daiAddress?:string, chainId?:ChainId) {
   const contract = new ethers.Contract(daiAddress ? daiAddress : '', Abi, provider).connect(signer)
   return contract
 }
+
+export async function getMMBaseInfo (chainId?:any) {
+  const provider = getProvider(chainId)
+  const account = await provider.send('eth_requestAccounts', [])
+  const chainID = await provider.send('eth_chainId', [])
+  return {
+    chainId: chainID,
+    account
+  }
+}

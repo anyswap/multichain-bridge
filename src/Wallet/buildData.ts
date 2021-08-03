@@ -1,7 +1,7 @@
 import swapBTCABI from '../ABI/swapBTCABI.json'
 import swapETHABI from '../ABI/swapETHABI.json'
 import {getWeb3Contract, web3Fn} from './web3'
-import {getContract as getMMContract, getProvider} from './metamask'
+import {getContract as getMMContract, getProvider, getMMBaseInfo} from './metamask'
 import {specSymbol, Status, ChainId} from '../constants'
 import {
   isAddress
@@ -192,7 +192,7 @@ export function signSwapinData ({
   address,
   token
 }:BuildParams) {
-  return new Promise(resolve => {
+  return new Promise(async(resolve) => {
     console.log(value.toString().indexOf('.') === -1)
     if (!value || value.toString().indexOf('.') !== -1 || isNaN(Number(value))) {
       resolve({
@@ -233,27 +233,29 @@ export function signSwapinData ({
       })
     } else {
       const provider = getProvider()
-      provider.send('eth_requestAccounts', []).then((res:any) => {
-        console.log(res)
-        const data = {
-          from: res[0],
-          to: address,
-          value: value
-        }
-        console.log(data)
-        provider.send('eth_sendTransaction', [data]).then((res:any) => {
-          resolve({
-            msg: Status.Success,
-            info: res
-          })
-        }).catch((err:any) => {
-          console.log(err)
-          resolve({
-            msg: Status.Error,
-            error: err?.data?.message ? err?.data?.message : (err?.message ? err?.message : err.toString())
-          })
+      const MMdata = await getMMBaseInfo()
+      const data = {
+        from: MMdata.account,
+        to: address,
+        value: value
+      }
+      console.log(data)
+      provider.send('eth_sendTransaction', [data]).then((res:any) => {
+        resolve({
+          msg: Status.Success,
+          info: res
+        })
+      }).catch((err:any) => {
+        console.log(err)
+        resolve({
+          msg: Status.Error,
+          error: err?.data?.message ? err?.data?.message : (err?.message ? err?.message : err.toString())
         })
       })
+      // provider.send('eth_requestAccounts', []).then((res:any) => {
+      //   console.log(res)
+        
+      // })
     }
   })
 }
