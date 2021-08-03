@@ -1,6 +1,6 @@
 import swapBTCABI from '../ABI/swapBTCABI.json'
 import swapETHABI from '../ABI/swapETHABI.json'
-import {getContract, web3Fn} from './web3'
+import {getWeb3Contract, web3Fn} from './web3'
 import {getContract as getMMContract, getProvider} from './metamask'
 import {specSymbol, Status, ChainId} from '../constants'
 import {
@@ -29,7 +29,7 @@ export function buildSwapoutSpecData ({
   if (!web3Fn.utils.isAddress(token)) {
     throw 'Token verification failed!'
   }
-  const contract = getContract(swapBTCABI, token)
+  const contract = getWeb3Contract(swapBTCABI, token)
   return contract.methods.Swapout(value, address).encodeABI()
 }
 
@@ -47,7 +47,7 @@ export function buildSwapoutErc20Data ({
   if (!web3Fn.utils.isAddress(token)) {
     throw 'Token verification failed!'
   }
-  const contract = getContract(swapETHABI, token)
+  const contract = getWeb3Contract(swapETHABI, token)
   return contract.methods.Swapout(value, address).encodeABI()
 }
 
@@ -79,7 +79,7 @@ export function buildSwapinData ({
   if (!web3Fn.utils.isAddress(token)) {
     throw 'Token verification failed!'
   }
-  const contract = getContract(swapBTCABI, token)
+  const contract = getWeb3Contract(swapBTCABI, token)
   return contract.methods.transfer(address, value).encodeABI()
 }
 
@@ -183,7 +183,7 @@ export function signSwapoutData ({
   }
 }
 // const provider = getProvider()
-// provider.send('eth_requestAccounts', []).then(res => {
+// provider.send('eth_requestAccounts', []).then((res:any) => {
 //   console.log(res)
 // })
 
@@ -233,7 +233,7 @@ export function signSwapinData ({
       })
     } else {
       const provider = getProvider()
-      provider.send('eth_requestAccounts', []).then(res => {
+      provider.send('eth_requestAccounts', []).then((res:any) => {
         console.log(res)
         const data = {
           from: res[0],
