@@ -84,7 +84,8 @@ export function createAddress (address:string, coin:string | undefined, initAddr
 export function isSpecAddress (address:string, coin?:string) {
   let network = getNetwork(coin)
   try {
-    return bitcoin.address.toOutputScript(address, network)
+    bitcoin.address.toOutputScript(address, network)
+    return address
   } catch (error) {
     return false
   }

@@ -183,8 +183,6 @@ export function signSwapoutData ({
   }
 }
 // const provider = getProvider()
-// console.log(provider)
-// console.log(provider.getSigner())
 // provider.send('eth_requestAccounts', []).then(res => {
 //   console.log(res)
 // })

@@ -155,7 +155,7 @@ export function formatSymbol (symbol?:string) {
   return symbol.toUpperCase()
 }
 
-export function isAddress(address: string, chainId?: ChainId | undefined) {
+export function isAddress(address: string, chainId?: any) {
   if (chainId && specSymbol.includes(ChainId[chainId])) {
     return isSpecAddress(address, ChainId[chainId])
   } else if (chainId && ChainId[chainId] === ChainId.TRX) {
