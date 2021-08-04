@@ -49,7 +49,7 @@ export function GetTokenListByChainID ({
   tokenList?: Array<string>
 }) {
   return new Promise(resolve => {
-    // console.log(chainId)
+    console.log(srcChainID)
     const lObj = getLocalData(CURRENTCHAIN, srcChainID, CURRENTCHAIN)
     // console.log(lObj)
     if (lObj) {
@@ -123,7 +123,6 @@ export function GetRouterListByChainID ({
 }) {
   return new Promise(resolve => {
     // console.log(chainId)
-    console.log(srcChainID)
     if (!srcChainID) {
       resolve('')
     } else {

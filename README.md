@@ -179,6 +179,10 @@ Receive address
 ```bash
 Token address
 ```
+### destChain
+```bash
+Dest chain label
+```
 
 ## createAddress
 ### param1

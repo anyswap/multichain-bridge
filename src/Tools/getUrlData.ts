@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { parse } from 'qs'
+import { stringify } from 'qs'
 
 interface PostInterface {
   url: string,
@@ -8,7 +8,9 @@ interface PostInterface {
 
 export const postUrlData = ({url, params}: PostInterface) => {
   return new Promise(resolve => {
-    axios.post(url, parse(params)).then(res => {
+    // console.log(stringify(params))
+    axios.post(url, stringify(params)).then(res => {
+    // axios.post(url, parse(params)).then(res => {
       // console.log(res)
       resolve(res.data)
     }).catch(err => {

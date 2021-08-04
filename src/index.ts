@@ -4,3 +4,4 @@ export * from './getBridgeInfo'
 export * from './SpecialCoin'
 export * from './Wallet'
 export * from './GetStatus'
+

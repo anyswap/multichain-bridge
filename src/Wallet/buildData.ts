@@ -1,3 +1,4 @@
+import {ethers} from 'ethers'
 import swapBTCABI from '../ABI/swapBTCABI.json'
 import swapETHABI from '../ABI/swapETHABI.json'
 import {getWeb3Contract, web3Fn} from './web3'
@@ -6,6 +7,8 @@ import {specSymbol, Status, ChainId} from '../constants'
 import {
   isAddress
 } from '../Tools'
+import {recordsTxns} from '../Tools/recordsTxns'
+import {GetTokenListByChainID} from '../getBridgeInfo'
 
 interface BuildParams {
   value: string | number,
@@ -170,27 +173,47 @@ export function signSwapoutErc20Data ({
   })
 }
 
-export function signSwapoutData ({
+export async function signSwapoutData ({
   value,
   address,
   token,
   destChain
 }:BuildParams) {
-  if (destChain && specSymbol.includes(ChainId[destChain])) {
-    return signSwapoutSpecData({value, address, token, destChain})
-  } else {
-    return signSwapoutErc20Data({value, address, token})
+  let results:any
+  const baseInfo:any = await getMMBaseInfo()
+  const tokenList:any = await GetTokenListByChainID({srcChainID: baseInfo.chainId})
+  const curTokenInfo = tokenList && token ? tokenList.bridge[token] : ''
+  const destTokenInfo = curTokenInfo && destChain ? curTokenInfo.destChains[destChain] : ''
+  const rdata = {
+    hash: '',
+    chainId: destChain,
+    selectChain: baseInfo.chainId,
+    account: baseInfo.account?.toLowerCase(),
+    value: ethers.BigNumber.from(value).toString(),
+    formatvalue: '',
+    to: address,
+    symbol: '',
+    version: 'swapout',
+    pairid: destTokenInfo.pairid
   }
+  // console.log(rdata)
+  if (destChain && specSymbol.includes(ChainId[destChain])) {
+    results = await signSwapoutSpecData({value, address, token, destChain})
+  } else {
+    results = await signSwapoutErc20Data({value, address, token})
+  }
+  if (results.msg === Status.Success && destTokenInfo.pairid) {
+    rdata.hash = results.info
+    recordsTxns(rdata)
+  }
+  return results
 }
-// const provider = getProvider()
-// provider.send('eth_requestAccounts', []).then((res:any) => {
-//   console.log(res)
-// })
 
 export function signSwapinData ({
   value,
   address,
-  token
+  token,
+  destChain
 }:BuildParams) {
   return new Promise(async(resolve) => {
     console.log(value.toString().indexOf('.') === -1)
@@ -215,11 +238,33 @@ export function signSwapinData ({
       })
       return
     }
-    console.log(token)
+    // console.log(token)
+    const baseInfo:any = await getMMBaseInfo()
+    const tokenList:any = await GetTokenListByChainID({srcChainID: baseInfo.chainId})
+    const curTokenInfo = tokenList ? tokenList.bridge[token] : ''
+    const destTokenInfo = curTokenInfo && destChain ? curTokenInfo.destChains[destChain] : ''
+    // console.log(baseInfo)
+    // console.log(curTokenInfo)
+    // console.log(destTokenInfo)
+    const rdata = {
+      hash: '',
+      chainId: baseInfo.chainId,
+      selectChain: destChain,
+      account: baseInfo.account?.toLowerCase(),
+      value: ethers.BigNumber.from(value).toString(),
+      formatvalue: '',
+      to: '',
+      symbol: '',
+      version: 'swapin',
+      pairid: destTokenInfo.pairid
+    }
+    // console.log(rdata)
     if (web3Fn.utils.isAddress(token)) {
       const contract = getMMContract(swapBTCABI, token)
       contract.transfer(address, value).then((res:any) => {
         // console.log(res)
+        rdata.hash = res
+        recordsTxns(rdata)
         resolve({
           msg: Status.Success,
           info: res.hash
@@ -233,14 +278,17 @@ export function signSwapinData ({
       })
     } else {
       const provider = getProvider()
-      const MMdata = await getMMBaseInfo()
       const data = {
-        from: MMdata.account,
+        from: baseInfo.account,
         to: address,
         value: value
       }
-      console.log(data)
+      // console.log(data)
       provider.send('eth_sendTransaction', [data]).then((res:any) => {
+        rdata.hash = res
+        if (destTokenInfo.pairid) {
+          recordsTxns(rdata)
+        }
         resolve({
           msg: Status.Success,
           info: res
@@ -254,7 +302,6 @@ export function signSwapinData ({
       })
       // provider.send('eth_requestAccounts', []).then((res:any) => {
       //   console.log(res)
-        
       // })
     }
   })

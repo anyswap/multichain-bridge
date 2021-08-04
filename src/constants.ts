@@ -11,6 +11,10 @@ export const swapoutStatusUrl = baseURL + '/v2/getWithdrawHashStatus'
 export const chainInfoUrl = baseURL + '/data/bridgeChainInfo'
 // https://bridgeapi.anyswap.exchange/v3/serverinfo?chainId=56&version=STABLEV3
 export const routerInfoUrl = baseURL + '/v3/serverinfo'
+
+export const recordsTxnsUrl = baseURL + '/v3/records'
+// export const recordsTxnsUrl = 'http://localhost:8107/v3/records'
+
 export const routerVersion = 'STABLEV3'
 
 export const timeout = 1000 * 60 * 30
