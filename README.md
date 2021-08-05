@@ -14,9 +14,9 @@ Get token list
 ```bash
 Current chain ID, required
 ```
-### destChainID
+### chainList
 ```bash
-Dest chain ID, not required
+Chain list, array format, not required
 ```
 ### tokenList
 ```bash

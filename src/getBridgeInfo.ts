@@ -41,12 +41,12 @@ const CURRENTCHAIN = 'CURRENTCHAIN'
 // GetChainList
 export function GetTokenListByChainID ({
   srcChainID,
-  destChainID,
-  tokenList = []
+  tokenList = [],
+  chainList = [],
 }: {
   srcChainID:any,
-  destChainID?:any,
   tokenList?: Array<string>
+  chainList?: Array<string>
 }) {
   return new Promise(resolve => {
     console.log(srcChainID)
@@ -61,40 +61,51 @@ export function GetTokenListByChainID ({
         } else {
           const data:any = res
           let bsckData:any = {}
-          if (destChainID && tokenList.length > 0) {
+          if (chainList.length > 0 && tokenList.length > 0) {
             for (const key in data) {
               for (const token in data[key]) {
-                if (tokenList.length > 0 && !tokenList.includes(token)) continue
+                if (!tokenList.includes(token)) continue
                 if (!bsckData[key]) bsckData[key] = {}
-                bsckData[key][token] = {
-                  ...data[key][token],
-                  destChains: {
-                    [destChainID]: {
-                      ...data[key][token].destChains[destChainID]
+                for (const c in data[key][token].destChains) {
+                  if (chainList.includes(c)) {
+                    if (!bsckData[key][token]) {
+                      bsckData[key][token] = {
+                        ...data[key][token],
+                        destChains: {}
+                      }
+                    }
+                    bsckData[key][token].destChains[c] = {
+                      ...data[key][token].destChains[c]
                     }
                   }
                 }
               }
             }
-          } else if (!destChainID && tokenList.length > 0) {
+          } else if (chainList.length <= 0 && tokenList.length > 0) {
             for (const key in data) {
               for (const token in data[key]) {
-                if (tokenList.length > 0 && !tokenList.includes(token)) continue
+                if (!tokenList.includes(token)) continue
                 if (!bsckData[key]) bsckData[key] = {}
                 bsckData[key][token] = {
                   ...data[key][token]
                 }
               }
             }
-          } else if (destChainID && tokenList.length <= 0) {
+          } else if (chainList.length > 0 && tokenList.length <= 0) {
             for (const key in data) {
               for (const token in data[key]) {
                 if (!bsckData[key]) bsckData[key] = {}
-                bsckData[key][token] = {
-                  ...data[key][token],
-                  destChains: {
-                    [destChainID]: {
-                      ...data[key][token].destChains[destChainID]
+                for (const c in data[key][token].destChains) {
+                  // console.log(chainList)
+                  if (chainList.includes(c)) {
+                    if (!bsckData[key][token]) {
+                      bsckData[key][token] = {
+                        ...data[key][token],
+                        destChains: {}
+                      }
+                    }
+                    bsckData[key][token].destChains[c] = {
+                      ...data[key][token].destChains[c]
                     }
                   }
                 }
