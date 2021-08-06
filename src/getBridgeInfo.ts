@@ -50,6 +50,7 @@ export function GetTokenListByChainID ({
 }) {
   return new Promise(resolve => {
     console.log(srcChainID)
+    console.log(srcChainID)
     const lObj = getLocalData(CURRENTCHAIN, srcChainID, CURRENTCHAIN)
     // console.log(lObj)
     if (lObj) {
@@ -65,6 +66,7 @@ export function GetTokenListByChainID ({
             for (const key in data) {
               for (const token in data[key]) {
                 if (!tokenList.includes(token)) continue
+                if (!chainList.includes(data[key][token].chainId)) continue
                 if (!bsckData[key]) bsckData[key] = {}
                 for (const c in data[key][token].destChains) {
                   if (chainList.includes(c)) {
@@ -94,6 +96,7 @@ export function GetTokenListByChainID ({
           } else if (chainList.length > 0 && tokenList.length <= 0) {
             for (const key in data) {
               for (const token in data[key]) {
+                if (!chainList.includes(data[key][token].chainId)) continue
                 if (!bsckData[key]) bsckData[key] = {}
                 for (const c in data[key][token].destChains) {
                   // console.log(chainList)
