@@ -15,6 +15,7 @@ interface BuildParams {
   address: string,
   token: string | undefined,
   destChain?: ChainId | undefined
+  isRecords?: any
 }
 
 export function buildSwapoutSpecData ({
@@ -177,7 +178,8 @@ export async function signSwapoutData ({
   value,
   address,
   token,
-  destChain
+  destChain,
+  isRecords
 }:BuildParams) {
   let results:any
   const baseInfo:any = await getMMBaseInfo()
@@ -202,7 +204,7 @@ export async function signSwapoutData ({
   } else {
     results = await signSwapoutErc20Data({value, address, token})
   }
-  if (results.msg === Status.Success && destTokenInfo.pairid) {
+  if (results.msg === Status.Success && destTokenInfo.pairid && !isRecords) {
     rdata.hash = results.info
     recordsTxns(rdata)
   }
@@ -213,7 +215,8 @@ export function signSwapinData ({
   value,
   address,
   token,
-  destChain
+  destChain,
+  isRecords
 }:BuildParams) {
   return new Promise(async(resolve) => {
     console.log(value.toString().indexOf('.') === -1)
@@ -264,7 +267,9 @@ export function signSwapinData ({
       contract.transfer(address, value).then((res:any) => {
         // console.log(res)
         rdata.hash = res
-        recordsTxns(rdata)
+        if (!isRecords) {
+          recordsTxns(rdata)
+        }
         resolve({
           msg: Status.Success,
           info: res.hash
@@ -286,7 +291,7 @@ export function signSwapinData ({
       // console.log(data)
       provider.send('eth_sendTransaction', [data]).then((res:any) => {
         rdata.hash = res
-        if (destTokenInfo.pairid) {
+        if (destTokenInfo.pairid && !isRecords) {
           recordsTxns(rdata)
         }
         resolve({
