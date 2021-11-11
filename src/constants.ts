@@ -45,6 +45,7 @@ export enum ChainId {
   BNBTEST = 97,
   HTTEST = 256,
   FSNTEST = 46688,
+  DEVETH = 787
 }
 
 export enum Status {
@@ -79,4 +80,5 @@ export const networks = {
   [ChainId.BNBTEST]: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   [ChainId.HTTEST]: 'https://http-testnet.hecochain.com',
   [ChainId.FSNTEST]: 'https://testnet.fsn.dev/api',
+  [ChainId.DEVETH]: 'https://rpc.deveth.org'
 }
