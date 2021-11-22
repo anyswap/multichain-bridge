@@ -43,20 +43,22 @@ export function GetTokenListByChainID ({
   srcChainID,
   tokenList = [],
   chainList = [],
+  bridgeAPI
 }: {
   srcChainID:any,
   tokenList?: Array<string>
   chainList?: Array<string>
+  bridgeAPI?: string | undefined
 }) {
   return new Promise(resolve => {
-    console.log(srcChainID)
-    console.log(srcChainID)
+    // console.log(bridgeAPI)
+    // console.log(srcChainID)
     const lObj = getLocalData(CURRENTCHAIN, srcChainID, CURRENTCHAIN)
     // console.log(lObj)
     if (lObj) {
       resolve(lObj)
     } else {
-      getUrlData({url: toChainUrl + '/' + srcChainID}).then((res:any) => {
+      getUrlData({url: (bridgeAPI ? bridgeAPI : toChainUrl) + '/' + srcChainID}).then((res:any) => {
         if (res && res.msg && res.msg === Status.Error) {
           resolve('')
         } else {
