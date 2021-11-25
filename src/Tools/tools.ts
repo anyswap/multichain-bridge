@@ -4,7 +4,7 @@ import {
   ChainId,
   specSymbol
 } from '../constants'
-import {isSpecAddress, isTRXAddress} from '../SpecialCoin'
+import {isSpecAddress, isTRXAddress, isTERRAAddress} from '../SpecialCoin'
 import {web3Fn} from '../Wallet'
 
 export function thousandBit (num:any, dec:any = 8) {
@@ -156,10 +156,12 @@ export function formatSymbol (symbol?:string) {
 }
 
 export function isAddress(address: string, chainId?: any) {
-  if (chainId && specSymbol.includes(ChainId[chainId])) {
-    return isSpecAddress(address, ChainId[chainId])
-  } else if (chainId && ChainId[chainId] === ChainId.TRX) {
+  if (chainId && ChainId[chainId] === ChainId.TRX) {
     return isTRXAddress(address)
+  } else if (chainId && ChainId[chainId] === ChainId.TERRA) {
+    return isTERRAAddress(address)
+  }else if (chainId && specSymbol.includes(ChainId[chainId])) {
+    return isSpecAddress(address, ChainId[chainId])
   } else {
     return web3Fn.utils.isAddress(address)
   }
