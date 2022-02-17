@@ -2,30 +2,48 @@ import {ethers} from 'ethers'
 import {networks, ChainId} from '../constants'
 
 
-export function getProvider (chainId?:ChainId) {
+export function getProvider ({chainId, rpc}: {chainId?:ChainId,rpc?:any}) {
   if (window && window.ethereum) {
     return new ethers.providers.Web3Provider(window.ethereum)
   } else {
-    return new ethers.providers.JsonRpcProvider(chainId ? networks[chainId] : '')
+    console.log(ethers)
+    return new ethers.providers.JsonRpcProvider(rpc ? rpc : (chainId ? networks[chainId] : ''))
   }
 }
 
 export function getContract (Abi:any, daiAddress?:string, chainId?:ChainId) {
-  const provider = getProvider(chainId)
+  const provider = getProvider({chainId})
   const signer = provider.getSigner()
   const contract = new ethers.Contract(daiAddress ? daiAddress : '', Abi, provider).connect(signer)
   return contract
 }
 
 export async function getMMBaseInfo (chainId?:any) {
-  const provider = getProvider(chainId)
-  const account = await provider.send('eth_requestAccounts', [])
-  const chainID = await provider.send('eth_chainId', [])
+  const provider = getProvider({chainId})
+  let account = ''
+  let chainID = ''
+  console.log(provider)
+  console.log(await provider.getSigner())
+  try {
+    account = await provider.send('eth_requestAccounts', [])
+    // account = await provider.getSigner()
+  } catch (error) {
+    console.log(error)
+  }
+  try {
+    chainID = await provider.send('eth_chainId', [])
+    // account = await provider.getSigner()
+  } catch (error) {
+    console.log(error)
+  }
+  console.log(account)
+  // const chainID = await provider.send('eth_chainId', [])
+  console.log(chainID)
   // console.log(ethers.BigNumber.from(chainID))
   // console.log(ethers.BigNumber.from(chainID).toString())
   // console.log(ethers.BigNumber.from(chainID).toNumber())
   return {
-    chainId: ethers.BigNumber.from(chainID).toString(),
-    account: account[0]?.toLowerCase()
+    chainId: chainID ? ethers.BigNumber.from(chainID).toString() : '',
+    account: account ? account[0]?.toLowerCase() : ''
   }
 }

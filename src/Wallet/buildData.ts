@@ -2,20 +2,24 @@ import {ethers} from 'ethers'
 import swapBTCABI from '../ABI/swapBTCABI.json'
 import swapETHABI from '../ABI/swapETHABI.json'
 import {getWeb3Contract, web3Fn} from './web3'
-import {getContract as getMMContract, getProvider, getMMBaseInfo} from './metamask'
+import {getContract as getMMContract, getProvider} from './metamask'
 import {specSymbol, Status, ChainId} from '../constants'
 import {
   isAddress
 } from '../Tools'
 import {recordsTxns} from '../Tools/recordsTxns'
-import {GetTokenListByChainID} from '../getBridgeInfo'
+// import {GetTokenListByChainID} from '../getBridgeInfo'
 
 interface BuildParams {
   value: string | number,
   address: string,
   token: string | undefined,
-  destChain?: ChainId | undefined
+  destChain?: any
   isRecords?: any
+  account?: any
+  srcChain?: any
+  pairid?: any
+  rpc?: any
 }
 
 export function buildSwapoutSpecData ({
@@ -166,6 +170,7 @@ export function signSwapoutErc20Data ({
         info: res.hash
       })
     }).catch((err:any) => {
+      console.log(err)
       resolve({
         msg: Status.Error,
         error: err?.data?.message ? err?.data?.message : (err?.message ? err?.message : err.toString())
@@ -179,24 +184,23 @@ export async function signSwapoutData ({
   address,
   token,
   destChain,
-  isRecords
+  isRecords,
+  account,
+  srcChain,
+  pairid
 }:BuildParams) {
   let results:any
-  const baseInfo:any = await getMMBaseInfo()
-  const tokenList:any = await GetTokenListByChainID({srcChainID: baseInfo.chainId})
-  const curTokenInfo = tokenList && token ? tokenList.bridge[token] : ''
-  const destTokenInfo = curTokenInfo && destChain ? curTokenInfo.destChains[destChain] : ''
   const rdata = {
     hash: '',
     chainId: destChain,
-    selectChain: baseInfo.chainId,
-    account: baseInfo.account?.toLowerCase(),
+    selectChain: srcChain,
+    account: account?.toLowerCase(),
     value: ethers.BigNumber.from(value).toString(),
     formatvalue: '',
     to: address,
     symbol: '',
     version: 'swapout',
-    pairid: destTokenInfo.pairid
+    pairid: pairid
   }
   // console.log(rdata)
   if (destChain && specSymbol.includes(ChainId[destChain])) {
@@ -204,7 +208,7 @@ export async function signSwapoutData ({
   } else {
     results = await signSwapoutErc20Data({value, address, token})
   }
-  if (results.msg === Status.Success && destTokenInfo.pairid && !isRecords) {
+  if (results.msg === Status.Success && pairid && !isRecords) {
     rdata.hash = results.info
     recordsTxns(rdata)
   }
@@ -216,10 +220,15 @@ export function signSwapinData ({
   address,
   token,
   destChain,
-  isRecords
+  isRecords,
+  account,
+  srcChain,
+  pairid,
+  rpc
 }:BuildParams) {
   return new Promise(async(resolve) => {
-    console.log(value.toString().indexOf('.') === -1)
+    // console.log(value.toString().indexOf('.') === -1)
+    // console.log(11111111)
     if (!value || value.toString().indexOf('.') !== -1 || isNaN(Number(value))) {
       resolve({
         msg: Status.Error,
@@ -241,25 +250,17 @@ export function signSwapinData ({
       })
       return
     }
-    // console.log(token)
-    const baseInfo:any = await getMMBaseInfo()
-    const tokenList:any = await GetTokenListByChainID({srcChainID: baseInfo.chainId})
-    const curTokenInfo = tokenList ? tokenList.bridge[token] : ''
-    const destTokenInfo = curTokenInfo && destChain ? curTokenInfo.destChains[destChain] : ''
-    // console.log(baseInfo)
-    // console.log(curTokenInfo)
-    // console.log(destTokenInfo)
     const rdata = {
       hash: '',
-      chainId: baseInfo.chainId,
+      chainId: srcChain,
       selectChain: destChain,
-      account: baseInfo.account?.toLowerCase(),
+      account: account?.toLowerCase(),
       value: ethers.BigNumber.from(value).toString(),
       formatvalue: '',
       to: '',
       symbol: '',
       version: 'swapin',
-      pairid: destTokenInfo.pairid
+      pairid: pairid
     }
     // console.log(rdata)
     if (web3Fn.utils.isAddress(token)) {
@@ -282,16 +283,16 @@ export function signSwapinData ({
         })
       })
     } else {
-      const provider = getProvider()
-      const data = {
-        from: baseInfo.account,
+      const provider = getProvider({chainId: srcChain, rpc})
+      console.log(provider)
+      const data:any = {
+        from: account,
         to: address,
-        value: value
+        value: value,
       }
-      // console.log(data)
       provider.send('eth_sendTransaction', [data]).then((res:any) => {
         rdata.hash = res
-        if (destTokenInfo.pairid && !isRecords) {
+        if (pairid && !isRecords) {
           recordsTxns(rdata)
         }
         resolve({
