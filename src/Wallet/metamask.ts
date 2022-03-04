@@ -1,8 +1,8 @@
 import {ethers} from 'ethers'
-import {networks, ChainId} from '../constants'
+import {networks} from '../constants'
 
 
-export function getProvider ({chainId, rpc}: {chainId?:ChainId,rpc?:any}) {
+export function getProvider ({chainId, rpc}: {chainId?:any,rpc?:any}) {
   if (window && window.ethereum) {
     return new ethers.providers.Web3Provider(window.ethereum)
   } else {
@@ -11,7 +11,7 @@ export function getProvider ({chainId, rpc}: {chainId?:ChainId,rpc?:any}) {
   }
 }
 
-export function getContract (Abi:any, daiAddress?:string, chainId?:ChainId) {
+export function getContract (Abi:any, daiAddress?:string, chainId?:any) {
   const provider = getProvider({chainId})
   const signer = provider.getSigner()
   const contract = new ethers.Contract(daiAddress ? daiAddress : '', Abi, provider).connect(signer)

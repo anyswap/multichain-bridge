@@ -21,7 +21,7 @@ export const timeout = 1000 * 60 * 30
 
 export const LOCAL_DATA_LABEL = 'ANYSWAP-BRIDGE-SDK-V1-'
 
-export const specSymbol = ['BTC', 'LTC', 'BLOCK', 'COLX', 'TRX', 'TERRA']
+export const specSymbol = ['BTC', 'LTC', 'BLOCK', 'COLX', 'TRX', 'TERRA', 'XRP']
 
 export enum ChainId {
   MAINNET = 1,
@@ -42,6 +42,7 @@ export enum ChainId {
   TRX = 'TRX',
   COLX = 'COLX',
   TERRA = 'TERRA',
+  XRP = 'XRP',
   RINKEBY = 4,
   BNBTEST = 97,
   HTTEST = 256,
@@ -58,7 +59,7 @@ export enum Status {
   Timeout = 'Timeout',
 }
 
-export const networks = {
+export const networks:any = {
   [ChainId.MAINNET]: 'https://ethmainnet.anyswap.exchange',
   [ChainId.GOERLI]: 'https://goerli.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd',
   [ChainId.BNBMAIN]: 'https://bsc-dataseed1.ninicoin.io/',

@@ -160,7 +160,9 @@ export function isAddress(address: string, chainId?: any) {
     return isTRXAddress(address)
   } else if (chainId && ChainId[chainId] === ChainId.TERRA) {
     return isTERRAAddress(address)
-  }else if (chainId && specSymbol.includes(ChainId[chainId])) {
+  } else if (chainId && ChainId[chainId] === ChainId.XRP) {
+    return address && address.length === 34 ? address : false
+  } else if (chainId && specSymbol.includes(ChainId[chainId])) {
     return isSpecAddress(address, ChainId[chainId])
   } else {
     return web3Fn.utils.isAddress(address)
