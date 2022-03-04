@@ -4,7 +4,7 @@ import {
   ChainId,
   specSymbol
 } from '../constants'
-import {isSpecAddress, isTRXAddress, isTERRAAddress} from '../SpecialCoin'
+import {isSpecAddress, isTRXAddress, isTERRAAddress, isNASAddress} from '../SpecialCoin'
 import {web3Fn} from '../Wallet'
 
 export function thousandBit (num:any, dec:any = 8) {
@@ -156,14 +156,20 @@ export function formatSymbol (symbol?:string) {
 }
 
 export function isAddress(address: string, chainId?: any) {
-  if (chainId && ChainId[chainId] === ChainId.TRX) {
-    return isTRXAddress(address)
-  } else if (chainId && ChainId[chainId] === ChainId.TERRA) {
-    return isTERRAAddress(address)
-  } else if (chainId && ChainId[chainId] === ChainId.XRP) {
-    return address && address.length === 34 ? address : false
-  } else if (chainId && specSymbol.includes(ChainId[chainId])) {
-    return isSpecAddress(address, ChainId[chainId])
+  if (chainId) {
+    if (ChainId[chainId] === ChainId.TRX) {
+      return isTRXAddress(address)
+    } else if (ChainId[chainId] === ChainId.TERRA) {
+      return isTERRAAddress(address)
+    } else if (ChainId[chainId] === ChainId.XRP) {
+      return address && address.length === 34 ? address : false
+    } else if (ChainId[chainId] === ChainId.NAS) {
+      return isNASAddress(address) ? address : false
+    } else if (specSymbol.includes(ChainId[chainId])) {
+      return isSpecAddress(address, ChainId[chainId])
+    } else {
+      return web3Fn.utils.isAddress(address)
+    }
   } else {
     return web3Fn.utils.isAddress(address)
   }

@@ -21,7 +21,7 @@ export const timeout = 1000 * 60 * 30
 
 export const LOCAL_DATA_LABEL = 'ANYSWAP-BRIDGE-SDK-V1-'
 
-export const specSymbol = ['BTC', 'LTC', 'BLOCK', 'COLX', 'TRX', 'TERRA', 'XRP']
+export const specSymbol = ['BTC', 'LTC', 'BLOCK', 'COLX', 'TRX', 'TERRA', 'XRP', 'NAS']
 
 export enum ChainId {
   MAINNET = 1,
@@ -43,6 +43,7 @@ export enum ChainId {
   COLX = 'COLX',
   TERRA = 'TERRA',
   XRP = 'XRP',
+  NAS = 'NAS',
   RINKEBY = 4,
   BNBTEST = 97,
   HTTEST = 256,
